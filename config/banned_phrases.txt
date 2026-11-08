@@ -1,0 +1,17 @@
+# One phrase per line. Case-insensitive, whole-word match.
+# Applied to text WE write (titles, definitions, method notes, revision notes, templates),
+# never to quoted source titles or evidence. Edit only with human approval.
+freebie
+freebies
+bribe
+bribery
+vote buying
+vote-buying
+buy votes
+shocking
+outrageous
+shameful
+obscene
+greedy
+disgraceful
+scandal

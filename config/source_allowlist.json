@@ -1,0 +1,32 @@
+{
+  "_note": "Starter allowlist of source domains and their tier. Verify each domain by opening it before first use. Add a domain only through a decision entry in spec/decisions.md. A source declared 'primary' must have a primary-tier domain here; 'secondary' domains must be declared secondary. The 'sample' tier is valid only for SAMPLE fixtures and never in production.",
+  "domains": {
+    "fao.org": "primary",
+    "worldbank.org": "primary",
+    "un.org": "primary",
+    "who.int": "primary",
+    "unicef.org": "primary",
+    "wfp.org": "primary",
+    "imf.org": "primary",
+    "oecd.org": "primary",
+    "ilo.org": "primary",
+    "unep.org": "primary",
+    "ipcc.ch": "primary",
+    "sec.gov": "primary",
+    "mospi.gov.in": "primary",
+    "rbi.org.in": "primary",
+    "data.gov.in": "primary",
+    "cag.gov.in": "primary",
+    "niti.gov.in": "primary",
+    "cpcb.nic.in": "primary",
+    "indiabudget.gov.in": "primary",
+    "censusindia.gov.in": "primary",
+    "nfhsindia.org": "primary",
+    "bseindia.com": "primary",
+    "nseindia.com": "primary",
+    "mca.gov.in": "primary",
+    "ourworldindata.org": "secondary",
+    "forbes.com": "secondary",
+    "example.org": "sample"
+  }
+}

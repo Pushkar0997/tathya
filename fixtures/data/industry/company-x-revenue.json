@@ -1,0 +1,95 @@
+{
+  "id": "company-x-revenue",
+  "title": "Revenue of Company X (SAMPLE)",
+  "area": "industry",
+  "definition": "SAMPLE definition: revenue for the fiscal year ending on the stated date.",
+  "definition_source": "s1",
+  "unit": "billion USD",
+  "stale_after_months": 12,
+  "sample": true,
+  "sources": [
+    {
+      "id": "s1",
+      "publisher": "Sample Publisher",
+      "title": "Sample report (fixture, not a real source)",
+      "url": "https://example.org/sample-report",
+      "source_type": "primary",
+      "published": "2024-01-01",
+      "retrieved": "2026-11-01"
+    }
+  ],
+  "points": [
+    {
+      "geography": "USA",
+      "period_kind": "date",
+      "period": "2018-12-31",
+      "value": 10.0,
+      "status": "sample",
+      "source_id": "s1",
+      "evidence": "SAMPLE FIXTURE, not a real figure: 10.0",
+      "entered_by": "fixture-author",
+      "verified_by": "fixture-reviewer",
+      "verified_on": "2026-11-01"
+    },
+    {
+      "geography": "USA",
+      "period_kind": "date",
+      "period": "2019-12-31",
+      "value": 12.9,
+      "status": "sample",
+      "source_id": "s1",
+      "evidence": "SAMPLE FIXTURE, not a real figure: 12.9",
+      "entered_by": "fixture-author",
+      "verified_by": "fixture-reviewer",
+      "verified_on": "2026-11-01"
+    },
+    {
+      "geography": "USA",
+      "period_kind": "date",
+      "period": "2020-12-31",
+      "value": 14.4,
+      "status": "sample",
+      "source_id": "s1",
+      "evidence": "SAMPLE FIXTURE, not a real figure: 14.4",
+      "entered_by": "fixture-author",
+      "verified_by": "fixture-reviewer",
+      "verified_on": "2026-11-01"
+    },
+    {
+      "geography": "USA",
+      "period_kind": "date",
+      "period": "2021-12-31",
+      "value": 17.3,
+      "status": "sample",
+      "source_id": "s1",
+      "evidence": "SAMPLE FIXTURE, not a real figure: 17.3",
+      "entered_by": "fixture-author",
+      "verified_by": "fixture-reviewer",
+      "verified_on": "2026-11-01"
+    },
+    {
+      "geography": "USA",
+      "period_kind": "date",
+      "period": "2022-12-31",
+      "value": 18.8,
+      "status": "sample",
+      "source_id": "s1",
+      "evidence": "SAMPLE FIXTURE, not a real figure: 18.8",
+      "entered_by": "fixture-author",
+      "verified_by": "fixture-reviewer",
+      "verified_on": "2026-11-01"
+    },
+    {
+      "geography": "USA",
+      "period_kind": "date",
+      "period": "2023-12-31",
+      "value": 21.7,
+      "status": "sample",
+      "source_id": "s1",
+      "evidence": "SAMPLE FIXTURE, not a real figure: 21.7",
+      "entered_by": "fixture-author",
+      "verified_by": "fixture-reviewer",
+      "verified_on": "2026-11-01"
+    }
+  ]
+}

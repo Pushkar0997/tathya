@@ -1,0 +1,131 @@
+{
+  "id": "textile-waste-generated",
+  "title": "Textile waste generated (SAMPLE)",
+  "area": "planet",
+  "definition": "SAMPLE definition: textile waste generated each year.",
+  "definition_source": "s1",
+  "unit": "million tonnes",
+  "stale_after_months": 12,
+  "sample": true,
+  "sources": [
+    {
+      "id": "s1",
+      "publisher": "Sample Publisher",
+      "title": "Sample report (fixture, not a real source)",
+      "url": "https://example.org/sample-report",
+      "source_type": "primary",
+      "published": "2024-01-01",
+      "retrieved": "2026-11-01"
+    }
+  ],
+  "points": [
+    {
+      "geography": "WLD",
+      "period_kind": "calendar_year",
+      "period": "2015",
+      "value": 50.0,
+      "status": "sample",
+      "source_id": "s1",
+      "evidence": "SAMPLE FIXTURE, not a real figure: 50.0",
+      "entered_by": "fixture-author",
+      "verified_by": "fixture-reviewer",
+      "verified_on": "2026-11-01"
+    },
+    {
+      "geography": "WLD",
+      "period_kind": "calendar_year",
+      "period": "2016",
+      "value": 54.3,
+      "status": "sample",
+      "source_id": "s1",
+      "evidence": "SAMPLE FIXTURE, not a real figure: 54.3",
+      "entered_by": "fixture-author",
+      "verified_by": "fixture-reviewer",
+      "verified_on": "2026-11-01"
+    },
+    {
+      "geography": "WLD",
+      "period_kind": "calendar_year",
+      "period": "2017",
+      "value": 58.6,
+      "status": "sample",
+      "source_id": "s1",
+      "evidence": "SAMPLE FIXTURE, not a real figure: 58.6",
+      "entered_by": "fixture-author",
+      "verified_by": "fixture-reviewer",
+      "verified_on": "2026-11-01"
+    },
+    {
+      "geography": "WLD",
+      "period_kind": "calendar_year",
+      "period": "2018",
+      "value": 59.9,
+      "status": "sample",
+      "source_id": "s1",
+      "evidence": "SAMPLE FIXTURE, not a real figure: 59.9",
+      "entered_by": "fixture-author",
+      "verified_by": "fixture-reviewer",
+      "verified_on": "2026-11-01"
+    },
+    {
+      "geography": "WLD",
+      "period_kind": "calendar_year",
+      "period": "2019",
+      "value": 64.2,
+      "status": "sample",
+      "source_id": "s1",
+      "evidence": "SAMPLE FIXTURE, not a real figure: 64.2",
+      "entered_by": "fixture-author",
+      "verified_by": "fixture-reviewer",
+      "verified_on": "2026-11-01"
+    },
+    {
+      "geography": "WLD",
+      "period_kind": "calendar_year",
+      "period": "2020",
+      "value": 68.5,
+      "status": "sample",
+      "source_id": "s1",
+      "evidence": "SAMPLE FIXTURE, not a real figure: 68.5",
+      "entered_by": "fixture-author",
+      "verified_by": "fixture-reviewer",
+      "verified_on": "2026-11-01"
+    },
+    {
+      "geography": "WLD",
+      "period_kind": "calendar_year",
+      "period": "2021",
+      "value": 69.8,
+      "status": "sample",
+      "source_id": "s1",
+      "evidence": "SAMPLE FIXTURE, not a real figure: 69.8",
+      "entered_by": "fixture-author",
+      "verified_by": "fixture-reviewer",
+      "verified_on": "2026-11-01"
+    },
+    {
+      "geography": "WLD",
+      "period_kind": "calendar_year",
+      "period": "2022",
+      "value": 74.1,
+      "status": "sample",
+      "source_id": "s1",
+      "evidence": "SAMPLE FIXTURE, not a real figure: 74.1",
+      "entered_by": "fixture-author",
+      "verified_by": "fixture-reviewer",
+      "verified_on": "2026-11-01"
+    },
+    {
+      "geography": "WLD",
+      "period_kind": "calendar_year",
+      "period": "2023",
+      "value": 78.4,
+      "status": "sample",
+      "source_id": "s1",
+      "evidence": "SAMPLE FIXTURE, not a real figure: 78.4",
+      "entered_by": "fixture-author",
+      "verified_by": "fixture-reviewer",
+      "verified_on": "2026-11-01"
+    }
+  ]
+}
