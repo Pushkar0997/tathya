@@ -352,6 +352,7 @@ def build(
         autoescape=select_autoescape(["html", "xml"]),
     )
     has_tokens_css = (static_src / "css" / "tokens.css").exists()
+    has_fonts_css = (static_src / "css" / "fonts.css").exists()
 
     area_tiles = []
     metrics_by_area: dict[str, list[dict]] = {a: [] for a in pages.AREA_ORDER}
@@ -380,6 +381,7 @@ def build(
         root_prefix="",
         preview=preview,
         has_tokens_css=has_tokens_css,
+        has_fonts_css=has_fonts_css,
         body_class="area-shared page-home",
         current_area=None,
         current_page="home",
@@ -403,6 +405,7 @@ def build(
             root_prefix="",
             preview=preview,
             has_tokens_css=has_tokens_css,
+            has_fonts_css=has_fonts_css,
             body_class=f"area-{area_id} page-area",
             current_area=area_id,
             current_page=f"area-{area_id}",
@@ -426,6 +429,7 @@ def build(
                 root_prefix="../",
                 preview=preview,
                 has_tokens_css=has_tokens_css,
+                has_fonts_css=has_fonts_css,
                 body_class=f"area-{area_id} page-metric",
                 current_area=area_id,
                 current_page="metric",
@@ -442,6 +446,7 @@ def build(
         root_prefix="",
         preview=preview,
         has_tokens_css=has_tokens_css,
+        has_fonts_css=has_fonts_css,
         body_class="area-shared page-contribute",
         current_area=None,
         current_page="contribute",
@@ -457,6 +462,7 @@ def build(
         root_prefix="",
         preview=preview,
         has_tokens_css=has_tokens_css,
+        has_fonts_css=has_fonts_css,
         body_class="area-shared page-about",
         current_area=None,
         current_page="about",
