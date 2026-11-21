@@ -36,8 +36,8 @@
       "source_id": "s2",
       "evidence": "Consolidated Statements of Income, Twelve Months Ended January 28, 2024: Revenue 60,922 ($ in millions).",
       "entered_by": "agent:gemini",
-      "verified_by": "",
-      "verified_on": ""
+      "verified_by": "Pushkar0997",
+      "verified_on": "2026-11-21"
     },
     {
       "geography": "USA",
@@ -48,8 +48,8 @@
       "source_id": "s1",
       "evidence": "Consolidated Statements of Income, Twelve Months Ended January 26, 2025: Revenue 130,497 ($ in millions).",
       "entered_by": "agent:gemini",
-      "verified_by": "",
-      "verified_on": ""
+      "verified_by": "Pushkar0997",
+      "verified_on": "2026-11-21"
     },
     {
       "geography": "USA",
@@ -60,8 +60,8 @@
       "source_id": "s1",
       "evidence": "GAAP Financial Summary FY26, Twelve Months Ended January 25, 2026: Revenue $215,938 ($ in millions).",
       "entered_by": "agent:gemini",
-      "verified_by": "",
-      "verified_on": ""
+      "verified_by": "Pushkar0997",
+      "verified_on": "2026-11-21"
     }
   ]
 }
