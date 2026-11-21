@@ -98,10 +98,52 @@ def split_metric_title(title: str) -> tuple[str, str]:
     return " ".join(words[:mid]), " ".join(words[mid:])
 
 
+def compute_series_delta(series_points: list[dict], unit: str) -> dict | None:
+    """Compute a strictly factual arithmetic change summary between earliest and latest points."""
+    if len(series_points) < 2:
+        return None
+    first = series_points[0]
+    latest = series_points[-1]
+    v0 = float(first["value"])
+    v1 = float(latest["value"])
+    diff = v1 - v0
+    if abs(diff) < 1e-9:
+        direction = "flat"
+    elif diff > 0:
+        direction = "up"
+    else:
+        direction = "down"
+
+    sign = "+" if diff > 0 else ("-" if diff < 0 else "")
+    u_low = unit.lower()
+    if u_low.startswith("percent"):
+        short_label = f"{sign}{abs(diff):.1f} pp"
+    elif v0 > 0:
+        pct = (diff / v0) * 100.0
+        short_label = f"{sign}{abs(pct):.1f}%"
+    else:
+        short_label = f"{sign}{charts.format_number(abs(diff), unit)}"
+
+    p0 = charts._short_period(str(first["period"]))
+    p1 = charts._short_period(str(latest["period"]))
+    ratio = round(v1 / v0, 1) if v0 > 0 and v1 > 0 else None
+    ratio_str = f"{ratio:.1f}x" if ratio and ratio >= 1.5 else ""
+
+    return {
+        "first_period": p0,
+        "latest_period": p1,
+        "direction": direction,
+        "short_label": short_label,
+        "ratio_str": ratio_str,
+        "full_label": f"{short_label} ({p0} to {p1})",
+    }
+
+
 def enrich_metric(doc: dict, build_date: date, state_map: dict[str, dict], preview: bool = False) -> dict:
     annotated = staleness.annotate_metric_staleness(doc, build_date)
     sources_by_id = {s["id"]: s for s in annotated.get("sources", [])}
     unit = annotated["unit"]
+    area_id = annotated.get("area", "shared")
     months = annotated["stale_after_months"]
 
     enriched_points = []
@@ -164,6 +206,59 @@ def enrich_metric(doc: dict, build_date: date, state_map: dict[str, dict], previ
         else ""
     )
 
+    # Editorial charts: choose column bars for 2-4 point series, gradient trend for 5+ points, scale gauge for 1 point
+    if len(series_points) >= 5:
+        editorial_chart_svg = charts.editorial_trend_chart(
+            series_points,
+            unit=unit,
+            title=annotated["title"],
+            area_id=area_id,
+            preview=preview,
+            grad_id=f"grad-{annotated['id']}",
+        )
+        bar_chart_svg = charts.editorial_bar_chart(
+            series_points,
+            unit=unit,
+            title=annotated["title"],
+            area_id=area_id,
+            preview=preview,
+        )
+        chart_kind_label = "Trajectory over time"
+    elif 2 <= len(series_points) <= 4:
+        editorial_chart_svg = charts.editorial_bar_chart(
+            series_points,
+            unit=unit,
+            title=annotated["title"],
+            area_id=area_id,
+            preview=preview,
+        )
+        bar_chart_svg = charts.editorial_trend_chart(
+            series_points,
+            unit=unit,
+            title=annotated["title"],
+            area_id=area_id,
+            preview=preview,
+            grad_id=f"grad-{annotated['id']}",
+        )
+        chart_kind_label = "Period-by-period scale"
+    elif len(series_points) == 1:
+        editorial_chart_svg = charts.editorial_bar_chart(
+            series_points,
+            unit=unit,
+            title=annotated["title"],
+            area_id=area_id,
+            preview=preview,
+        )
+        bar_chart_svg = ""
+        chart_kind_label = "Verified benchmark"
+    else:
+        editorial_chart_svg = ""
+        bar_chart_svg = ""
+        chart_kind_label = ""
+
+    spark_svg = charts.sparkline_svg(series_points, area_id=area_id) if series_points else ""
+    series_delta = compute_series_delta(series_points, unit)
+
     if state_pts:
         latest_state_period = max(p["period"] for p in state_pts)
         latest_state_points = [p for p in state_pts if p["period"] == latest_state_period]
@@ -202,10 +297,15 @@ def enrich_metric(doc: dict, build_date: date, state_map: dict[str, dict], previ
         "points": enriched_points,
         "headline_point": headline_point,
         "series_points": series_points,
+        "series_delta": series_delta,
         "state_points": latest_state_points,
         "latest_state_period": latest_state_period,
         "has_state_grid": bool(latest_state_points),
         "line_chart_svg": line_svg,
+        "editorial_chart_svg": editorial_chart_svg,
+        "bar_chart_svg": bar_chart_svg,
+        "chart_kind_label": chart_kind_label,
+        "sparkline_svg": spark_svg,
         "tile_grid_svg": tile_svg,
         "shown_points": shown_points,
         "any_stale": any(p["stale"] for p in enriched_points),
@@ -217,7 +317,10 @@ def enrich_metric(doc: dict, build_date: date, state_map: dict[str, dict], previ
 def select_paired_scale(metrics: list[dict], preview: bool = False) -> dict | None:
     """Select two comparable points in one shared unit for the home page paired scale (M1-CHT-02, M2-HOM-01).
 
-    In production mode, only verified points are eligible. In preview mode, sample points are also eligible.
+    Priority:
+    1. Two distinct points sharing both unit and period.
+    2. Earliest vs. latest eligible points within the same metric (same unit, zero-based shared scale),
+       preferring the series with the largest ratio so the visual contrast is clear.
     """
     allowed_statuses = {"verified", "sample"} if preview else {"verified"}
 
@@ -230,20 +333,31 @@ def select_paired_scale(metrics: list[dict], preview: bool = False) -> dict | No
                 key = (unit, p["period"])
                 by_unit_period.setdefault(key, []).append((m, p))
 
-    # Prefer a pair from two different metrics in the same unit & period, else two geographies in the same metric
     chosen_pair: tuple[tuple[dict, dict], tuple[dict, dict]] | None = None
     for (unit, period), items in sorted(by_unit_period.items(), key=lambda kv: kv[0][1], reverse=True):
         if len(items) >= 2:
-            # Sort descending by value so larger bar is first
             sorted_items = sorted(items, key=lambda mp: float(mp[1]["value"]), reverse=True)
             first = sorted_items[0]
-            # Pick a second point with a distinct positive value if possible
             second = next(
                 (it for it in sorted_items[1:] if float(it[1]["value"]) != float(first[1]["value"]) and float(it[1]["value"]) > 0),
                 sorted_items[1],
             )
             chosen_pair = (first, second)
             break
+
+    # Fallback: compare earliest vs latest eligible point within the same metric (same unit, honest scale)
+    if chosen_pair is None:
+        best_ratio = 0.0
+        for m in metrics:
+            eligible = [p for p in m.get("series_points", []) if p["status"] in allowed_statuses and float(p["value"]) > 0]
+            if len(eligible) >= 2:
+                a, b = eligible[0], eligible[-1]
+                va, vb = float(a["value"]), float(b["value"])
+                hi, lo = (a, b) if va >= vb else (b, a)
+                ratio = float(hi["value"]) / max(float(lo["value"]), 1e-9)
+                if ratio > best_ratio:
+                    best_ratio = ratio
+                    chosen_pair = ((m, hi), (m, lo))
 
     if chosen_pair is None:
         return None
@@ -254,6 +368,8 @@ def select_paired_scale(metrics: list[dict], preview: bool = False) -> dict | No
     max_v = max(v1, v2, 1.0)
     flex_1 = round(max((v1 / max_v) * 5.0, 0.5), 2)
     flex_2 = round(max((v2 / max_v) * 5.0, 0.5), 2)
+    ratio_val = round(v1 / v2, 1) if v2 > 0 else None
+    ratio_label = f"{ratio_val:.1f}x" if ratio_val and ratio_val >= 1.1 else ""
 
     svg = charts.paired_scale_bars(
         {
@@ -273,6 +389,7 @@ def select_paired_scale(metrics: list[dict], preview: bool = False) -> dict | No
     )
     return {
         "unit": m1["unit"],
+        "ratio_label": ratio_label,
         "first": {"metric": m1, "point": p1, "flex": flex_1},
         "second": {"metric": m2, "point": p2, "flex": flex_2},
         "svg": svg,

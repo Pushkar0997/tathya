@@ -48,6 +48,9 @@
         {{ metric.unit }}, {{ hp.geography_label }}, {{ hp.period_display }}
         <span class="badge badge-tag">{{ hp.source_badge }}</span>
         <span class="badge badge-tag">{{ hp.status_label }}</span>
+        {% if metric.series_delta %}
+        <span class="badge badge-tag">{{ metric.series_delta.full_label }}</span>
+        {% endif %}
         {% if hp.stale %}
         <span class="badge badge-tag badge-stale">Stale</span>
         {% endif %}
@@ -64,8 +67,13 @@
 {% block content %}
 <section class="section-container metric-main-grid" aria-label="Chart and primary source record">
   <div class="chart-panel">
-    <h2 class="chart-panel-title">Over time</h2>
-    {{ metric.line_chart_svg | safe }}
+    <div class="chart-panel-header">
+      <h2 class="chart-panel-title">Over time</h2>
+      {% if metric.series_delta %}
+      <span class="delta-pill">{{ metric.series_delta.full_label }}</span>
+      {% endif %}
+    </div>
+    {{ metric.editorial_chart_svg | safe }}
     <p class="chart-panel-note">Years run left to right. On the live site the axis starts at zero and every point has its own source record.</p>
   </div>
 
@@ -108,6 +116,15 @@
   </div>
   {% endif %}
 </section>
+
+{% if metric.bar_chart_svg %}
+<section class="section-container secondary-chart-section" aria-labelledby="secondary-chart-heading">
+  <div class="secondary-chart-panel">
+    <h2 id="secondary-chart-heading" class="secondary-chart-title">Alternate view · <span class="italic-normal">same zero-based scale</span></h2>
+    {{ metric.bar_chart_svg | safe }}
+  </div>
+</section>
+{% endif %}
 
 {% if metric.has_state_grid %}
 <section class="state-grid-band" aria-labelledby="state-grid-heading">
@@ -167,4 +184,21 @@
     {% endfor %}
   </div>
 </section>
+
+{% if related_metrics %}
+<section class="section-container connected-strip-section" aria-labelledby="metric-connected-heading">
+  <h2 id="metric-connected-heading" class="connected-strip-title">Across the <span class="italic-normal">ledger</span></h2>
+  <div class="connected-strip-grid">
+    {% for rm in related_metrics %}
+    {% set rhp = rm.headline_point %}
+    <a href="{{ root_prefix }}metrics/{{ rm.id }}.html" class="connected-card connected-card-{{ rm.area }}">
+      <span class="connected-card-area">{{ area_meta[rm.area].label }}</span>
+      <span class="connected-card-value">{{ rhp.compact_value }}</span>
+      <span class="connected-card-title">{{ rm.title }}</span>
+      <span class="connected-card-meta">{{ rm.unit }} · {{ rhp.geography_label }}, {{ rhp.period_display }}</span>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
 {% endblock %}

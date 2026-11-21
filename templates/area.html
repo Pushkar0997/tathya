@@ -49,6 +49,9 @@
       {{ hero_metric.unit }}, {{ hp.geography_label }}, {{ hp.period_display }}
       <span class="badge badge-tier">{{ hp.source_badge }}</span>
       <span class="badge badge-status">{{ hp.status_label }}</span>
+      {% if hero_metric.series_delta %}
+      <span class="badge badge-delta">{{ hero_metric.series_delta.full_label }}</span>
+      {% endif %}
       {% if hp.stale %}
       <span class="badge badge-stale">Stale</span>
       {% endif %}
@@ -68,8 +71,14 @@
     <div class="measure-row{% if loop.last %} measure-row-last{% endif %}">
       <b class="measure-title"><a href="{{ root_prefix }}metrics/{{ m.id }}.html">{{ m.title }}</a></b>
       {% if hp %}
+      {% if m.sparkline_svg %}
+      <span class="measure-sparkline">{{ m.sparkline_svg | safe }}</span>
+      {% endif %}
       <i class="measure-meta">{{ hp.compact_value }} ({{ m.unit }}) · {{ hp.geography_label }}, {{ hp.period_display }} · {{ hp.source_badge }}</i>
       <span class="measure-badges">
+        {% if m.series_delta %}
+        <u class="badge badge-tag">{{ m.series_delta.short_label }}</u>
+        {% endif %}
         <u class="badge badge-tag">{{ hp.status_label }}</u>
         <u class="badge badge-tag badge-tier-tag">{{ hp.source_type_label }}</u>
         {% if hp.stale %}
@@ -93,8 +102,25 @@
 
 {% if hero_metric and hero_metric.headline_point %}
 {% set hp = hero_metric.headline_point %}
-<section class="section-container area-source-section" aria-labelledby="area-source-heading">
-  <div class="source-card">
+<section class="section-container area-visual-grid" aria-label="Visual chart and source record">
+  <div class="area-chart-panel area-chart-panel-{{ current_area }}">
+    <div class="area-chart-header">
+      <div>
+        <span class="area-chart-kicker">{{ hero_metric.chart_kind_label }}</span>
+        <h2 class="area-chart-title">{{ hero_metric.title }}</h2>
+      </div>
+      {% if hero_metric.series_delta %}
+      <span class="delta-pill">{{ hero_metric.series_delta.full_label }}</span>
+      {% endif %}
+    </div>
+    {{ hero_metric.editorial_chart_svg | safe }}
+    <div class="area-chart-footer">
+      <p class="area-chart-note">Axis starts at zero. Every plotted figure links directly to its primary source.</p>
+      <a href="{{ root_prefix }}metrics/{{ hero_metric.id }}.html" class="area-chart-cta">Full metric &amp; all points →</a>
+    </div>
+  </div>
+
+  <div class="source-card area-source-card">
     <h2 id="area-source-heading" class="source-card-title">Source record</h2>
     <div class="card-row"><b>Metric</b><span><a href="{{ root_prefix }}metrics/{{ hero_metric.id }}.html">{{ hero_metric.title }}</a></span></div>
     <div class="card-row"><b>Value</b><span>{{ hp.formatted_value }} {{ hero_metric.unit }} <span class="badge badge-tag">{{ hp.status_label }}</span> <span class="badge badge-tag">{{ hp.source_type_label }}</span>{% if hp.stale %} <span class="badge badge-tag badge-stale">Stale</span>{% endif %}</span></div>
@@ -108,6 +134,25 @@
     {% if hp.has_revision %}
     <div class="card-row card-row-last"><b>Updated</b><span>{{ hp.revision_note }}</span></div>
     {% endif %}
+  </div>
+</section>
+{% endif %}
+
+{% if connected_areas %}
+<section class="section-container connected-strip-section" aria-labelledby="connected-strip-heading">
+  <h2 id="connected-strip-heading" class="connected-strip-title">Across the <span class="italic-normal">ledger</span></h2>
+  <p class="connected-strip-sub">Other verified figures published in Tathya beside {{ area_info.label }}.</p>
+  <div class="connected-strip-grid">
+    {% for tile in connected_areas %}
+    {% set cm = tile.hero_metric %}
+    {% set chp = cm.headline_point %}
+    <a href="{{ root_prefix }}metrics/{{ cm.id }}.html" class="connected-card connected-card-{{ tile.id }}">
+      <span class="connected-card-area">{{ tile.label }}</span>
+      <span class="connected-card-value">{{ chp.compact_value }}</span>
+      <span class="connected-card-title">{{ cm.title }}</span>
+      <span class="connected-card-meta">{{ cm.unit }} · {{ chp.geography_label }}, {{ chp.period_display }}</span>
+    </a>
+    {% endfor %}
   </div>
 </section>
 {% endif %}

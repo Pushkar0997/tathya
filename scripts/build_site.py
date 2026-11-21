@@ -362,10 +362,18 @@ def build(
 
     for area_id in pages.AREA_ORDER:
         meta = dict(pages.AREA_META[area_id])
-        count = len(metrics_by_area[area_id])
+        a_metrics = metrics_by_area[area_id]
+        count = len(a_metrics)
         meta["count"] = count
         meta["count_str"] = f"{count:02d}"
+        meta["hero_metric"] = a_metrics[0] if a_metrics else None
         area_tiles.append(meta)
+
+    visual_cards = [
+        {"area": tile, "metric": tile["hero_metric"]}
+        for tile in area_tiles
+        if tile["hero_metric"] and tile["hero_metric"].get("headline_point")
+    ]
 
     recent_metrics = sorted(
         [m for m in enriched_metrics if m.get("headline_point")],
@@ -388,6 +396,7 @@ def build(
         metrics=enriched_metrics,
         total_points=total_points,
         area_tiles=area_tiles,
+        visual_cards=visual_cards,
         recent_metrics=recent_metrics,
         paired_scale=paired_scale,
     )
@@ -400,6 +409,10 @@ def build(
         a_metrics = metrics_by_area[area_id]
         hero_metric = a_metrics[0] if a_metrics else None
         area_covers = area_tokens.get(area_id, {}).get("covers", info["tagline"])
+        connected_areas = [
+            tile for tile in area_tiles
+            if tile["id"] != area_id and tile["hero_metric"] and tile["hero_metric"].get("headline_point")
+        ]
         area_html = area_tpl.render(
             page_title=f"Tathya — {info['label']}",
             root_prefix="",
@@ -413,6 +426,7 @@ def build(
             area_covers=area_covers,
             area_metrics=a_metrics,
             hero_metric=hero_metric,
+            connected_areas=connected_areas,
         )
         (resolved_out / f"{area_id}.html").write_text(area_html, encoding="utf-8")
 
@@ -424,6 +438,10 @@ def build(
         for m in enriched_metrics:
             area_id = m["area"]
             info = pages.AREA_META[area_id]
+            related_metrics = [
+                other for other in enriched_metrics
+                if other["id"] != m["id"] and other.get("headline_point")
+            ][:3]
             metric_html = metric_tpl.render(
                 page_title=f"Tathya — {m['title']}",
                 root_prefix="../",
@@ -435,6 +453,8 @@ def build(
                 current_page="metric",
                 area_info=info,
                 metric=m,
+                related_metrics=related_metrics,
+                area_meta=pages.AREA_META,
             )
             (metrics_dir / f"{m['id']}.html").write_text(metric_html, encoding="utf-8")
 

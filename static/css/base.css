@@ -1313,3 +1313,441 @@ body.page-about .site-footer {
     scroll-behavior: auto !important;
   }
 }
+
+/* Editorial Visual Ledger, Area Charts, Sparklines & Cross-Area Connections */
+.paired-scale-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+  margin-bottom: 36px;
+}
+
+.paired-scale-header .home-h2-large {
+  margin: 0;
+}
+
+.scale-ratio-callout {
+  background: var(--shared-color-indigo, #1B1346);
+  color: var(--shared-color-white, #FFFFFF);
+  padding: 16px 24px;
+  border-top: 6px solid var(--shared-color-rani, #D81B60);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.scale-ratio-num {
+  font-family: var(--shared-font-home-display, 'Playfair Display', Georgia, serif);
+  font-weight: 900;
+  font-style: italic;
+  font-size: 42px;
+  line-height: 1;
+  color: var(--shared-color-marigold, #FFB627);
+}
+
+.scale-ratio-caption {
+  font-size: 13px;
+  margin-top: 4px;
+  color: var(--shared-color-lilac, #E6E0FA);
+}
+
+/* Live figures & sparklines inside Home Area Tiles */
+.area-tile-top {
+  display: block;
+}
+
+.area-tile-live {
+  display: block;
+  margin: 20px 0 12px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.area-tile-stat {
+  display: block;
+  font-size: 48px !important;
+  line-height: 1;
+}
+
+.area-tile-stat-caption {
+  display: block;
+  font-size: 14px;
+  margin-top: 6px;
+  opacity: 0.92;
+}
+
+.area-tile-sparkline {
+  display: block;
+  margin-top: 12px;
+  max-width: 240px;
+}
+
+.sparkline-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.measure-sparkline {
+  flex: 0 0 120px;
+  display: inline-block;
+  align-self: center;
+}
+
+/* Home 2x2 Visual Ledger Gallery */
+.visual-ledger-section {
+  padding-top: 56px;
+  padding-bottom: 48px;
+}
+
+.visual-ledger-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px 24px;
+  margin-bottom: 28px;
+}
+
+.visual-ledger-header .section-h2 {
+  margin: 0;
+}
+
+.visual-ledger-sub {
+  margin: 0;
+  color: var(--shared-color-muted, #4B4570);
+  font-size: 16px;
+}
+
+.visual-ledger-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.visual-card {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+  color: #FFFFFF;
+}
+
+.visual-card-people {
+  background: var(--people-color-hero-bg, #2A0B1E);
+  color: var(--people-color-hero-fg, #FFD3E0);
+  border-top: 8px solid var(--people-color-accent, #FF6B9A);
+}
+
+.visual-card-planet {
+  background: var(--planet-color-hero-bg, #0A3B2F);
+  color: var(--planet-color-hero-fg, #E3F5EA);
+  border-top: 8px solid var(--planet-color-accent, #C6E04B);
+}
+
+.visual-card-public-money {
+  background: var(--public-money-color-hero-bg, #0F1D3D);
+  color: var(--public-money-color-hero-fg, #EAF0FF);
+  border-top: 8px solid var(--public-money-color-accent, #F2B134);
+}
+
+.visual-card-industry {
+  background: var(--industry-color-hero-bg, #1A2BD6);
+  color: var(--industry-color-hero-fg, #FFFFFF);
+  border-top: 8px solid var(--industry-color-accent, #FFE45E);
+}
+
+.visual-card-kicker {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.visual-card-area {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: inherit;
+  text-decoration: none;
+  opacity: 0.9;
+}
+
+.delta-pill {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: 13px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.14);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+.visual-card-title {
+  margin: 0 0 8px;
+  font-family: var(--shared-font-home-display, 'Playfair Display', Georgia, serif);
+  font-size: 26px;
+  line-height: 1.15;
+  color: #FFFFFF;
+}
+
+.visual-card-title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.visual-card-headline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.visual-card-number {
+  font-family: var(--shared-font-home-display, 'Playfair Display', Georgia, serif);
+  font-weight: 900;
+  font-style: italic;
+  font-size: 44px;
+  line-height: 1;
+  color: #FFFFFF;
+}
+
+.visual-card-unit {
+  font-size: 14px;
+  opacity: 0.88;
+}
+
+.visual-card-chart {
+  padding: 8px 0;
+}
+
+.visual-card-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 14px;
+}
+
+.visual-card-link {
+  color: #FFFFFF;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Area Page 2-Column Visual Grid (Chart + Source Record) */
+.area-visual-grid {
+  padding-top: 24px;
+  padding-bottom: 64px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.area-chart-panel {
+  flex: 3 1 480px;
+  padding: 32px;
+  background: var(--color-hero-bg, #1B1346);
+  color: var(--color-hero-fg, #E6E0FA);
+  border-top: 10px solid var(--color-accent, #FFB627);
+}
+
+.area-chart-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.area-chart-kicker {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.85;
+  margin-bottom: 6px;
+}
+
+.area-chart-title {
+  margin: 0;
+  font-family: var(--font-display, Georgia, serif);
+  font-weight: var(--font-display-weight, 900);
+  font-size: clamp(26px, 3vw, 38px);
+  line-height: 1.05;
+  color: #FFFFFF;
+}
+
+.area-chart-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.area-chart-note {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.88;
+}
+
+.area-chart-cta {
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.area-source-card {
+  flex: 2 1 340px;
+  max-width: none;
+}
+
+/* Metric Chart Header & Secondary View */
+.chart-panel-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.chart-panel-header .chart-panel-title {
+  margin: 0;
+}
+
+.secondary-chart-section {
+  padding-top: 0;
+  padding-bottom: 56px;
+}
+
+.secondary-chart-panel {
+  background: var(--shared-color-indigo, #1B1346);
+  color: var(--shared-color-lilac, #E6E0FA);
+  padding: 28px 32px;
+  border-top: 6px solid var(--shared-color-marigold, #FFB627);
+}
+
+.secondary-chart-title {
+  margin: 0 0 16px;
+  font-family: var(--shared-font-home-display, 'Playfair Display', Georgia, serif);
+  font-size: 28px;
+  font-weight: 900;
+  color: #FFFFFF;
+}
+
+/* Cross-Area Connected Strip */
+.connected-strip-section {
+  padding-top: 24px;
+  padding-bottom: 88px;
+}
+
+.connected-strip-title {
+  margin: 0 0 8px;
+  font-family: var(--shared-font-home-display, 'Playfair Display', Georgia, serif);
+  font-weight: 900;
+  font-size: clamp(32px, 4vw, 48px);
+  line-height: 1.05;
+}
+
+.connected-strip-sub {
+  margin: 0 0 24px;
+  color: var(--color-muted, #4B4570);
+}
+
+.connected-strip-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.connected-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 22px;
+  background: var(--shared-color-white, #FFFFFF);
+  color: var(--shared-color-indigo, #1B1346);
+  border: 2px solid var(--shared-color-indigo, #1B1346);
+  text-decoration: none;
+}
+
+.connected-card-people { border-top: 8px solid var(--people-color-accent, #FF6B9A); }
+.connected-card-planet { border-top: 8px solid var(--planet-color-accent, #C6E04B); }
+.connected-card-public-money { border-top: 8px solid var(--public-money-color-accent, #F2B134); }
+.connected-card-industry { border-top: 8px solid var(--industry-color-accent, #FFE45E); }
+
+.connected-card-area {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--shared-color-muted, #4B4570);
+}
+
+.connected-card-value {
+  font-family: var(--shared-font-home-display, 'Playfair Display', Georgia, serif);
+  font-weight: 900;
+  font-style: italic;
+  font-size: 36px;
+  line-height: 1.05;
+  color: var(--shared-color-indigo, #1B1346);
+}
+
+.connected-card-title {
+  font-weight: 700;
+  font-size: 17px;
+  line-height: 1.25;
+}
+
+.connected-card-meta {
+  font-size: 13px;
+  color: var(--shared-color-muted, #4B4570);
+}
+
+@media (max-width: 860px) {
+  .visual-ledger-grid,
+  .connected-strip-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .area-visual-grid {
+    flex-direction: column;
+  }
+
+  .area-chart-panel,
+  .area-source-card,
+  .visual-card,
+  .secondary-chart-panel {
+    flex: 1 1 100%;
+    width: 100%;
+    padding: 20px;
+  }
+
+  .measure-sparkline {
+    display: block;
+    margin: 8px 0;
+    max-width: 160px;
+  }
+}

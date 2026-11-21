@@ -1,4 +1,4 @@
-"""SVG chart generators for Tathya (M1-CHT-01, M1-CHT-02, M1-CHT-03).
+"""SVG chart generators for Tathya (M1-CHT-01, M1-CHT-02, M1-CHT-03, plus editorial visuals).
 
 Standard library only. Emits deterministic, accessible inline SVG strings with no
 JavaScript and no external assets. No geographic boundary maps are ever used (INV-8).
@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import html
 import json
+import math
 from decimal import Decimal
 from pathlib import Path
 
@@ -17,6 +18,49 @@ TILE_CLASS_COLORS = {
     2: ("#B4A5EC", "#1B1346"),
     3: ("#6C58C8", "#FFFFFF"),
     4: ("#1B1346", "#FFFFFF"),
+}
+
+AREA_CHART_PALETTES = {
+    "people": {
+        "bg": "#2A0B1E",
+        "fg": "#FFD3E0",
+        "accent": "#FF6B9A",
+        "highlight": "#FFB627",
+        "grid": "#FFD3E0",
+        "bar_muted": "#8A3356",
+    },
+    "planet": {
+        "bg": "#0A3B2F",
+        "fg": "#E3F5EA",
+        "accent": "#C6E04B",
+        "highlight": "#FFFFFF",
+        "grid": "#E3F5EA",
+        "bar_muted": "#2F755E",
+    },
+    "public-money": {
+        "bg": "#0F1D3D",
+        "fg": "#EAF0FF",
+        "accent": "#F2B134",
+        "highlight": "#FFFFFF",
+        "grid": "#EAF0FF",
+        "bar_muted": "#3B568F",
+    },
+    "industry": {
+        "bg": "#1A2BD6",
+        "fg": "#FFFFFF",
+        "accent": "#FFE45E",
+        "highlight": "#FF6A1F",
+        "grid": "#FFFFFF",
+        "bar_muted": "#5E6DF2",
+    },
+    "shared": {
+        "bg": "#1B1346",
+        "fg": "#E6E0FA",
+        "accent": "#FFB627",
+        "highlight": "#D81B60",
+        "grid": "#FFFFFF",
+        "bar_muted": "#4B3F8A",
+    },
 }
 
 
@@ -64,6 +108,42 @@ def format_number(value: int | float, unit: str = "") -> str:
     if isinstance(value, float) and value.is_integer() and not is_inr and len(int_part) <= 3:
         return f"{sign}{int_grouped}.0"
     return f"{sign}{int_grouped}"
+
+
+def _nice_axis_max(max_val: float) -> float:
+    """Compute a clean zero-based ceiling for editorial chart axes."""
+    if max_val <= 0:
+        return 1.0
+    exp = math.floor(math.log10(max_val))
+    base = 10.0 ** exp
+    frac = max_val / base
+    for mult in (1.0, 1.2, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0, 8.0, 10.0):
+        if frac <= mult + 1e-9:
+            return round(mult * base, max(0, -exp + 2))
+    return round(10.0 * base, max(0, -exp + 2))
+
+
+def _short_value(val: float, unit: str = "") -> str:
+    """Compact axis/callout label preserving unit meaning."""
+    u_low = unit.lower()
+    if u_low.startswith("percent"):
+        return f"{format_number(val, unit)}%"
+    if u_low.startswith("billion"):
+        return f"{format_number(val, unit)} bn"
+    if u_low.startswith("million tonnes"):
+        return f"{format_number(val, unit)} Mt"
+    if u_low.startswith("million usd"):
+        if val >= 1000:
+            return f"${val / 1000.0:.1f}B"
+        return f"${format_number(val, unit)}M"
+    return format_number(val, unit)
+
+
+def _short_period(period: str) -> str:
+    """Short readable period label for x-axis ticks (e.g. 2026-01-25 -> 2026)."""
+    if len(period) == 10 and period[4] == "-" and period[7] == "-":
+        return period[:4]
+    return period
 
 
 def line_chart(
@@ -145,6 +225,322 @@ def line_chart(
         lines.append(f'  <text x="580" y="304" font-size="14" fill="#E6E0FA">{last_period}</text>')
     lines.append("</svg>")
     return "\n".join(lines)
+
+
+def editorial_trend_chart(
+    points: list[dict],
+    *,
+    unit: str = "",
+    title: str = "Metric over time",
+    area_id: str = "shared",
+    preview: bool = False,
+    grad_id: str = "trend-grad",
+) -> str:
+    """Rich editorial zero-based area-line SVG chart with gridlines, nodes, and direct callouts."""
+    if not points:
+        return ""
+    if len(points) == 1:
+        return editorial_bar_chart(points, unit=unit, title=title, area_id=area_id, preview=preview)
+
+    pal = AREA_CHART_PALETTES.get(area_id, AREA_CHART_PALETTES["shared"])
+    values = [float(p["value"]) for p in points]
+    periods = [str(p["period"]) for p in points]
+    has_sample = preview or any(p.get("status") == "sample" for p in points)
+
+    max_val = max(values)
+    y_max = _nice_axis_max(max_val * 1.08)
+
+    x_left = 74.0
+    x_right = 602.0
+    y_top = 48.0
+    y_bottom = 266.0
+    plot_h = y_bottom - y_top
+    plot_w = x_right - x_left
+
+    n = len(points)
+    coords: list[tuple[float, float]] = []
+    for i, val in enumerate(values):
+        x = x_left + (i / (n - 1)) * plot_w
+        y = y_bottom - (max(val, 0.0) / y_max) * plot_h
+        coords.append((round(x, 1), round(y, 1)))
+
+    def fc(c: float) -> str:
+        return str(int(c)) if c == int(c) else f"{c:.1f}"
+
+    poly_pts = " ".join(f"{fc(x)},{fc(y)}" for x, y in coords)
+    area_pts = f"{fc(coords[0][0])},{fc(y_bottom)} {poly_pts} {fc(coords[-1][0])},{fc(y_bottom)}"
+
+    safe_grad = "".join(ch if ch.isalnum() or ch in "-_" else "-" for ch in grad_id)
+    aria = f"{title}: {periods[0]} to {periods[-1]}"
+    if unit:
+        aria += f" in {unit}"
+    if has_sample:
+        aria += " (SAMPLE data)"
+
+    lines = [
+        f'<svg viewBox="0 0 640 326" class="chart-svg line-chart-svg editorial-trend-svg" role="img" aria-label="{html.escape(aria)}">',
+        "  <defs>",
+        f'    <linearGradient id="{safe_grad}" x1="0" y1="0" x2="0" y2="1">',
+        f'      <stop offset="0%" stop-color="{pal["accent"]}" stop-opacity="0.38"/>',
+        f'      <stop offset="100%" stop-color="{pal["accent"]}" stop-opacity="0.02"/>',
+        "    </linearGradient>",
+        "  </defs>",
+    ]
+
+    # Zero-based horizontal reference gridlines (0%, 33%, 67%, 100%)
+    for step_idx in range(4):
+        frac = step_idx / 3.0
+        gy = round(y_bottom - frac * plot_h, 1)
+        tick_val = round(y_max * frac, 2)
+        dash = "" if step_idx == 0 else ' stroke-dasharray="4 5"'
+        op = "0.45" if step_idx == 0 else "0.18"
+        lines.append(
+            f'  <line x1="{fc(x_left)}" y1="{fc(gy)}" x2="{fc(x_right)}" y2="{fc(gy)}" '
+            f'stroke="{pal["grid"]}" stroke-width="1" opacity="{op}"{dash}/>'
+        )
+        t_lbl = "0" if step_idx == 0 else _short_value(tick_val, unit)
+        lines.append(
+            f'  <text x="{fc(x_left - 10)}" y="{fc(gy + 4)}" text-anchor="end" '
+            f'font-size="12" fill="{pal["fg"]}" opacity="0.82">{html.escape(t_lbl)}</text>'
+        )
+
+    if has_sample:
+        lines.append(
+            f'  <text x="90" y="232" font-family="Playfair Display,Georgia,serif" '
+            f'font-weight="900" font-style="italic" font-size="92" fill="{pal["accent"]}" opacity="0.22">SAMPLE</text>'
+        )
+
+    # Translucent area fill + crisp trajectory polyline
+    lines.append(f'  <polygon points="{area_pts}" fill="url(#{safe_grad})"/>')
+    lines.append(
+        f'  <polyline fill="none" stroke="{pal["accent"]}" stroke-width="4" '
+        f'stroke-linejoin="round" stroke-linecap="round" points="{poly_pts}"/>'
+    )
+
+    # Data nodes and key value callouts (first, peak if distinct, latest)
+    peak_idx = values.index(max_val)
+    callout_indices = {0, n - 1}
+    if n >= 4 and peak_idx not in callout_indices:
+        callout_indices.add(peak_idx)
+
+    for i, ((x, y), val, per) in enumerate(zip(coords, values, periods)):
+        is_last = i == n - 1
+        title_txt = html.escape(f"{per}: {format_number(val, unit)} {unit}".strip())
+        if is_last:
+            lines.append(
+                f'  <circle cx="{fc(x)}" cy="{fc(y)}" r="13" fill="{pal["accent"]}" opacity="0.25"/>'
+            )
+            lines.append(
+                f'  <circle cx="{fc(x)}" cy="{fc(y)}" r="6.5" fill="{pal["highlight"]}" '
+                f'stroke="{pal["bg"]}" stroke-width="2.5"><title>{title_txt}</title></circle>'
+            )
+        else:
+            lines.append(
+                f'  <circle cx="{fc(x)}" cy="{fc(y)}" r="4.5" fill="{pal["accent"]}" '
+                f'stroke="{pal["bg"]}" stroke-width="2"><title>{title_txt}</title></circle>'
+            )
+
+        if i in callout_indices:
+            lbl = html.escape(_short_value(val, unit))
+            anchor = "start" if i == 0 else ("end" if is_last else "middle")
+            lx = x + 4 if i == 0 else (x - 2 if is_last else x)
+            ly = max(24.0, y - 16.0)
+            weight = "800" if is_last else "700"
+            fsize = "15" if is_last else "13"
+            fill_c = "#FFFFFF" if is_last else pal["fg"]
+            lines.append(
+                f'  <text x="{fc(lx)}" y="{fc(ly)}" text-anchor="{anchor}" '
+                f'font-size="{fsize}" font-weight="{weight}" fill="{fill_c}">{lbl}</text>'
+            )
+
+    # X-axis period labels
+    if n <= 5:
+        label_indices = list(range(n))
+    else:
+        label_indices = sorted({0, n // 3, (2 * n) // 3, n - 1})
+
+    for idx in label_indices:
+        x = coords[idx][0]
+        anchor = "start" if idx == 0 else ("end" if idx == n - 1 else "middle")
+        p_lbl = html.escape(_short_period(periods[idx]))
+        lines.append(
+            f'  <text x="{fc(x)}" y="302" text-anchor="{anchor}" font-size="13" '
+            f'font-weight="600" fill="{pal["fg"]}" opacity="0.9">{p_lbl}</text>'
+        )
+
+    lines.append("</svg>")
+    return "\n".join(lines)
+
+
+def editorial_bar_chart(
+    points: list[dict],
+    *,
+    unit: str = "",
+    title: str = "Comparison",
+    area_id: str = "shared",
+    preview: bool = False,
+) -> str:
+    """Editorial vertical column bar chart (2+ points) or calibrated single-value scale gauge (1 point)."""
+    if not points:
+        return ""
+
+    pal = AREA_CHART_PALETTES.get(area_id, AREA_CHART_PALETTES["shared"])
+    values = [float(p["value"]) for p in points]
+    periods = [str(p["period"]) for p in points]
+    has_sample = preview or any(p.get("status") == "sample" for p in points)
+
+    def fc(c: float) -> str:
+        return str(int(c)) if c == int(c) else f"{c:.1f}"
+
+    if len(points) == 1:
+        val = values[0]
+        per = periods[0]
+        scale_max = _nice_axis_max(val * 1.25)
+        bar_x = 32.0
+        bar_w_max = 576.0
+        bar_y = 92.0
+        bar_h = 56.0
+        fill_w = max(12.0, round((max(val, 0.0) / scale_max) * bar_w_max, 1))
+        val_lbl = html.escape(_short_value(val, unit))
+        aria = f"{title}: {format_number(val, unit)} {unit} ({per}) on zero-based scale"
+
+        lines = [
+            f'<svg viewBox="0 0 640 210" class="chart-svg line-chart-svg editorial-scale-svg" role="img" aria-label="{html.escape(aria)}">',
+            f'  <text x="{fc(bar_x)}" y="44" font-size="14" font-weight="700" fill="{pal["fg"]}" opacity="0.88">'
+            f'{html.escape(per)} · {html.escape(unit)}</text>',
+            f'  <text x="{fc(bar_x + bar_w_max)}" y="44" text-anchor="end" font-size="24" font-weight="800" fill="{pal["accent"]}">{val_lbl}</text>',
+            f'  <rect x="{fc(bar_x)}" y="{fc(bar_y)}" width="{fc(bar_w_max)}" height="{fc(bar_h)}" rx="6" fill="{pal["grid"]}" opacity="0.14"/>',
+            f'  <rect x="{fc(bar_x)}" y="{fc(bar_y)}" width="{fc(fill_w)}" height="{fc(bar_h)}" rx="6" fill="{pal["accent"]}"/>',
+        ]
+        # Scale ticks at 0%, 50%, 100%
+        for frac, anchor in ((0.0, "start"), (0.5, "middle"), (1.0, "end")):
+            tx = round(bar_x + frac * bar_w_max, 1)
+            tv = "0" if frac == 0.0 else _short_value(round(scale_max * frac, 2), unit)
+            lines.append(
+                f'  <line x1="{fc(tx)}" y1="{fc(bar_y + bar_h + 4)}" x2="{fc(tx)}" y2="{fc(bar_y + bar_h + 12)}" '
+                f'stroke="{pal["fg"]}" opacity="0.45"/>'
+            )
+            lines.append(
+                f'  <text x="{fc(tx)}" y="{fc(bar_y + bar_h + 30)}" text-anchor="{anchor}" font-size="12" fill="{pal["fg"]}" opacity="0.8">{html.escape(tv)}</text>'
+            )
+        lines.append("</svg>")
+        return "\n".join(lines)
+
+    # Multi-point vertical column bar chart (zero-based)
+    max_val = max(values)
+    y_max = _nice_axis_max(max_val * 1.12)
+    x_left = 74.0
+    x_right = 608.0
+    y_top = 48.0
+    y_bottom = 266.0
+    plot_h = y_bottom - y_top
+    plot_w = x_right - x_left
+    n = len(points)
+
+    slot_w = plot_w / n
+    bar_w = min(84.0, max(24.0, slot_w * 0.56))
+
+    aria = f"{title} bar comparison: {periods[0]} to {periods[-1]} in {unit}"
+    if has_sample:
+        aria += " (SAMPLE data)"
+
+    lines = [
+        f'<svg viewBox="0 0 640 326" class="chart-svg line-chart-svg editorial-bar-svg" role="img" aria-label="{html.escape(aria)}">',
+    ]
+
+    for step_idx in range(4):
+        frac = step_idx / 3.0
+        gy = round(y_bottom - frac * plot_h, 1)
+        tick_val = round(y_max * frac, 2)
+        dash = "" if step_idx == 0 else ' stroke-dasharray="4 5"'
+        op = "0.45" if step_idx == 0 else "0.18"
+        lines.append(
+            f'  <line x1="{fc(x_left)}" y1="{fc(gy)}" x2="{fc(x_right)}" y2="{fc(gy)}" '
+            f'stroke="{pal["grid"]}" stroke-width="1" opacity="{op}"{dash}/>'
+        )
+        t_lbl = "0" if step_idx == 0 else _short_value(tick_val, unit)
+        lines.append(
+            f'  <text x="{fc(x_left - 10)}" y="{fc(gy + 4)}" text-anchor="end" '
+            f'font-size="12" fill="{pal["fg"]}" opacity="0.82">{html.escape(t_lbl)}</text>'
+        )
+
+    for i, (val, per) in enumerate(zip(values, periods)):
+        is_last = i == n - 1
+        cx = x_left + (i + 0.5) * slot_w
+        bx = round(cx - bar_w / 2.0, 1)
+        bh = max(4.0, round((max(val, 0.0) / y_max) * plot_h, 1))
+        by = round(y_bottom - bh, 1)
+        fill_c = pal["accent"] if is_last else pal["bar_muted"]
+        stroke_attr = f' stroke="{pal["accent"]}" stroke-width="2"' if not is_last else ""
+        title_txt = html.escape(f"{per}: {format_number(val, unit)} {unit}".strip())
+        lines.append(
+            f'  <rect x="{fc(bx)}" y="{fc(by)}" width="{fc(bar_w)}" height="{fc(bh)}" '
+            f'rx="4" fill="{fill_c}"{stroke_attr}><title>{title_txt}</title></rect>'
+        )
+        v_lbl = html.escape(_short_value(val, unit))
+        lines.append(
+            f'  <text x="{fc(cx)}" y="{fc(max(24.0, by - 10.0))}" text-anchor="middle" '
+            f'font-size="{15 if is_last else 13}" font-weight="{800 if is_last else 700}" '
+            f'fill="{"#FFFFFF" if is_last else pal["fg"]}">{v_lbl}</text>'
+        )
+        p_lbl = html.escape(_short_period(per))
+        lines.append(
+            f'  <text x="{fc(cx)}" y="298" text-anchor="middle" font-size="13" '
+            f'font-weight="600" fill="{pal["fg"]}" opacity="0.9">{p_lbl}</text>'
+        )
+
+    lines.append("</svg>")
+    return "\n".join(lines)
+
+
+def sparkline_svg(
+    points: list[dict],
+    *,
+    area_id: str = "shared",
+    width: int = 220,
+    height: int = 52,
+) -> str:
+    """Compact decorative inline SVG sparkline for area tiles and measure rows."""
+    if not points:
+        return ""
+    pal = AREA_CHART_PALETTES.get(area_id, AREA_CHART_PALETTES["shared"])
+    values = [float(p["value"]) for p in points]
+
+    if len(values) == 1:
+        # Clean calibrated proportion bar for single-point metrics
+        return (
+            f'<svg viewBox="0 0 {width} {height}" class="sparkline-svg" aria-hidden="true">'
+            f'<rect x="0" y="{height // 2 - 5}" width="{width}" height="10" rx="5" fill="{pal["grid"]}" opacity="0.18"/>'
+            f'<rect x="0" y="{height // 2 - 5}" width="{int(width * 0.72)}" height="10" rx="5" fill="{pal["accent"]}"/>'
+            f'<circle cx="{int(width * 0.72)}" cy="{height // 2}" r="6" fill="{pal["highlight"]}"/>'
+            f"</svg>"
+        )
+
+    y_max = max(max(values), 1e-9)
+    pad_x = 8.0
+    pad_top = 8.0
+    pad_bot = 6.0
+    pw = width - 2 * pad_x
+    ph = height - pad_top - pad_bot
+    n = len(values)
+
+    coords = []
+    for i, v in enumerate(values):
+        x = round(pad_x + (i / (n - 1)) * pw, 1)
+        y = round(height - pad_bot - (max(v, 0.0) / y_max) * ph, 1)
+        coords.append((x, y))
+
+    pts_str = " ".join(f"{x},{y}" for x, y in coords)
+    area_str = f"{coords[0][0]},{height - pad_bot} {pts_str} {coords[-1][0]},{height - pad_bot}"
+    lx, ly = coords[-1]
+    return (
+        f'<svg viewBox="0 0 {width} {height}" class="sparkline-svg" aria-hidden="true">'
+        f'<polygon points="{area_str}" fill="{pal["accent"]}" opacity="0.22"/>'
+        f'<polyline fill="none" stroke="{pal["accent"]}" stroke-width="3" '
+        f'stroke-linejoin="round" stroke-linecap="round" points="{pts_str}"/>'
+        f'<circle cx="{lx}" cy="{ly}" r="5" fill="{pal["highlight"]}" stroke="{pal["bg"]}" stroke-width="1.5"/>'
+        f"</svg>"
+    )
 
 
 def paired_scale_bars(

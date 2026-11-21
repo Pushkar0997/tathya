@@ -25,7 +25,15 @@
 
 {% if paired_scale %}
 <section class="section-container paired-scale-section" aria-labelledby="paired-scale-heading">
-  <h2 id="paired-scale-heading" class="home-h2-large">Two figures,<br><span class="text-rani-italic">one scale.</span></h2>
+  <div class="paired-scale-header">
+    <h2 id="paired-scale-heading" class="home-h2-large">Two figures,<br><span class="text-rani-italic">one scale.</span></h2>
+    {% if paired_scale.ratio_label %}
+    <div class="scale-ratio-callout" aria-label="Ratio between the two figures">
+      <span class="scale-ratio-num">{{ paired_scale.ratio_label }}</span>
+      <span class="scale-ratio-caption">same unit · zero-based scale</span>
+    </div>
+    {% endif %}
+  </div>
   <div class="paired-scale-blocks">
     {% set p1 = paired_scale.first.point %}
     {% set m1 = paired_scale.first.metric %}
@@ -63,15 +71,66 @@
   <div class="area-tiles-grid">
     {% for tile in area_tiles %}
     <a href="{{ root_prefix }}{{ tile.id }}.html" class="area-tile area-tile-{{ tile.id }}">
-      <span class="area-tile-title">{{ tile.label }}</span>
-      <span class="area-tile-bottom">
+      <span class="area-tile-top">
+        <span class="area-tile-title">{{ tile.label }}</span>
         <span class="area-tile-blurb">{{ tile.tile_blurb }}</span>
+      </span>
+      {% if tile.hero_metric and tile.hero_metric.headline_point %}
+      {% set thp = tile.hero_metric.headline_point %}
+      <span class="area-tile-live">
+        <span class="area-tile-stat {{ tile.tile_count_class }}">{{ thp.compact_value }}</span>
+        <span class="area-tile-stat-caption">{{ tile.hero_metric.title }} · {{ thp.period_display }}</span>
+        {% if tile.hero_metric.sparkline_svg %}
+        <span class="area-tile-sparkline">{{ tile.hero_metric.sparkline_svg | safe }}</span>
+        {% endif %}
+      </span>
+      {% endif %}
+      <span class="area-tile-bottom">
         <span class="area-tile-count {{ tile.tile_count_class }}">{{ tile.count_str }} metrics</span>
       </span>
     </a>
     {% endfor %}
   </div>
 </section>
+
+{% if visual_cards %}
+<section class="section-container visual-ledger-section" aria-labelledby="visual-ledger-heading">
+  <div class="visual-ledger-header">
+    <h2 id="visual-ledger-heading" class="section-h2">Across the <span class="italic-normal">ledger</span></h2>
+    <p class="visual-ledger-sub">Every chart starts at zero and links directly to its primary source record.</p>
+  </div>
+  <div class="visual-ledger-grid">
+    {% for item in visual_cards %}
+    {% set m = item.metric %}
+    {% set hp = m.headline_point %}
+    <article class="visual-card visual-card-{{ item.area.id }}">
+      <div class="visual-card-top">
+        <div class="visual-card-kicker">
+          <a href="{{ root_prefix }}{{ item.area.id }}.html" class="visual-card-area">{{ item.area.label }}</a>
+          {% if m.series_delta %}
+          <span class="delta-pill">{{ m.series_delta.full_label }}</span>
+          {% else %}
+          <span class="delta-pill">{{ hp.period_display }}</span>
+          {% endif %}
+        </div>
+        <h3 class="visual-card-title"><a href="{{ root_prefix }}metrics/{{ m.id }}.html">{{ m.title }}</a></h3>
+        <div class="visual-card-headline">
+          <span class="visual-card-number">{{ hp.compact_value }}</span>
+          <span class="visual-card-unit">{{ m.unit }} · {{ hp.geography_label }}</span>
+        </div>
+      </div>
+      <div class="visual-card-chart">
+        {{ m.editorial_chart_svg | safe }}
+      </div>
+      <div class="visual-card-footer">
+        <span class="visual-card-source">{{ hp.source.publisher }} · {{ hp.source_badge }}</span>
+        <a href="{{ root_prefix }}metrics/{{ m.id }}.html" class="visual-card-link">Inspect source →</a>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
 
 <section class="section-container recently-verified-section" aria-labelledby="recently-verified-heading">
   <h2 id="recently-verified-heading" class="section-h2">Recently <span class="italic-normal">verified</span></h2>
