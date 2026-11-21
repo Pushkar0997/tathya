@@ -62,6 +62,22 @@
 {% endblock %}
 
 {% block content %}
+{% if area_comparison %}
+<section class="section-container area-comparison-section" aria-labelledby="area-comparison-heading">
+  <div class="area-comparison-panel area-chart-panel-{{ current_area }}">
+    <div class="area-chart-header">
+      <div>
+        <span class="area-chart-kicker">{{ area_comparison.count }} metrics · shared unit ({{ area_comparison.unit }})</span>
+        <h2 id="area-comparison-heading" class="area-chart-title">{{ area_info.label }} on one scale</h2>
+      </div>
+      <span class="delta-pill">Zero-based comparison</span>
+    </div>
+    {{ area_comparison.svg | safe }}
+    <p class="area-chart-note">Latest published figures in {{ area_info.label }} sharing the same unit ({{ area_comparison.unit }}), ranked descending on one honest axis.</p>
+  </div>
+</section>
+{% endif %}
+
 <section class="section-container measures-section" aria-labelledby="measures-heading">
   <h2 id="measures-heading" class="section-h2">Measures</h2>
   {% if area_metrics %}
@@ -100,9 +116,97 @@
   {% endif %}
 </section>
 
+{% if area_metrics | length >= 2 %}
+<section class="section-container area-gallery-section" aria-labelledby="area-gallery-heading">
+  <h2 id="area-gallery-heading" class="connected-strip-title">Visuals in <span class="italic-normal">{{ area_info.label }}</span></h2>
+  <div class="visual-ledger-grid">
+    {% for m in area_metrics %}
+    {% if m.headline_point and m.editorial_chart_svg %}
+    {% set mhp = m.headline_point %}
+    <article class="visual-card visual-card-{{ current_area }}">
+      <div class="visual-card-top">
+        <div class="visual-card-kicker">
+          <span class="visual-card-area">{{ m.chart_kind_label }}</span>
+          {% if m.series_delta %}
+          <span class="delta-pill">{{ m.series_delta.short_label }}</span>
+          {% else %}
+          <span class="delta-pill">{{ mhp.period_display }}</span>
+          {% endif %}
+        </div>
+        <h3 class="visual-card-title"><a href="{{ root_prefix }}metrics/{{ m.id }}.html">{{ m.title }}</a></h3>
+        <div class="visual-card-headline">
+          <span class="visual-card-number">{{ mhp.compact_value }}</span>
+          <span class="visual-card-unit">{{ m.unit }} · {{ mhp.geography_label }}</span>
+        </div>
+      </div>
+      <div class="visual-card-chart">
+        {{ m.editorial_chart_svg | safe }}
+      </div>
+      <div class="visual-card-footer">
+        <span class="visual-card-source">{{ mhp.source.publisher }} · {{ mhp.source_badge }}</span>
+        <a href="{{ root_prefix }}metrics/{{ m.id }}.html" class="visual-card-link">Inspect source →</a>
+      </div>
+    </article>
+    {% endif %}
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if area_state_metric %}
+{% set sm = area_state_metric %}
+<section class="state-grid-band" aria-labelledby="area-state-heading">
+  <div class="section-container">
+    <div class="state-feature-grid">
+      <div class="state-feature-map">
+        <span class="state-feature-kicker">{{ sm.title }} · {{ sm.latest_state_period }}</span>
+        <h2 id="area-state-heading" class="state-grid-title">By <span class="italic-normal">Indian</span> state</h2>
+        <p class="state-grid-note">One tile per state, placed roughly by position. A tile grid, not a map. It makes no claim about boundaries.</p>
+        <div class="tile-grid-wrapper">
+          {{ sm.tile_grid_svg | safe }}
+        </div>
+        <div class="tile-legend">
+          <span>Lower</span>
+          <span class="legend-swatch k1"></span>
+          <span class="legend-swatch k2"></span>
+          <span class="legend-swatch k3"></span>
+          <span class="legend-swatch k4"></span>
+          <span>Higher</span>
+        </div>
+      </div>
+      <div class="state-feature-sidebar">
+        {% if sm.top_states %}
+        <div class="state-rank-card">
+          <h3 class="state-rank-heading">Highest reported</h3>
+          {% for st in sm.top_states %}
+          <div class="state-rank-row">
+            <span>{{ st.geography_label }}</span>
+            <strong>{{ st.compact_value }}</strong>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+        {% if sm.bottom_states %}
+        <div class="state-rank-card state-rank-card-low">
+          <h3 class="state-rank-heading">Lowest reported</h3>
+          {% for st in sm.bottom_states %}
+          <div class="state-rank-row">
+            <span>{{ st.geography_label }}</span>
+            <strong>{{ st.compact_value }}</strong>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+        <a href="{{ root_prefix }}metrics/{{ sm.id }}.html" class="state-feature-cta">Open all {{ sm.state_points | length }} state records →</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
 {% if hero_metric and hero_metric.headline_point %}
 {% set hp = hero_metric.headline_point %}
-<section class="section-container area-visual-grid" aria-label="Visual chart and source record">
+<section class="section-container area-visual-grid" aria-label="Headline chart and source record">
   <div class="area-chart-panel area-chart-panel-{{ current_area }}">
     <div class="area-chart-header">
       <div>

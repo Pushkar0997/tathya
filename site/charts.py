@@ -1,4 +1,4 @@
-"""SVG chart generators for Tathya (M1-CHT-01, M1-CHT-02, M1-CHT-03, plus editorial visuals).
+"""SVG chart generators for Tathya (M1-CHT-01, M1-CHT-02, M1-CHT-03, plus magazine editorial visuals).
 
 Standard library only. Emits deterministic, accessible inline SVG strings with no
 JavaScript and no external assets. No geographic boundary maps are ever used (INV-8).
@@ -104,7 +104,6 @@ def format_number(value: int | float, unit: str = "") -> str:
 
     if dec_part:
         return f"{sign}{int_grouped}.{dec_part}"
-    # If original value was a float with .0 (e.g. 8.0), preserve one decimal if unit is percent/billion/million
     if isinstance(value, float) and value.is_integer() and not is_inr and len(int_part) <= 3:
         return f"{sign}{int_grouped}.0"
     return f"{sign}{int_grouped}"
@@ -132,10 +131,14 @@ def _short_value(val: float, unit: str = "") -> str:
         return f"{format_number(val, unit)} bn"
     if u_low.startswith("million tonnes"):
         return f"{format_number(val, unit)} Mt"
+    if u_low.startswith("tonnes per person"):
+        return f"{format_number(val, unit)} t"
     if u_low.startswith("million usd"):
         if val >= 1000:
             return f"${val / 1000.0:.1f}B"
         return f"${format_number(val, unit)}M"
+    if "crore inr" in u_low:
+        return f"{format_number(val, unit)} Cr"
     return format_number(val, unit)
 
 
@@ -167,7 +170,7 @@ def line_chart(
     x_left = 50.0
     x_right = 609.0
     y_top = 60.0
-    y_bottom = 270.0  # y-axis zero baseline
+    y_bottom = 270.0
     plot_height = y_bottom - y_top
     plot_width = x_right - x_left
 
@@ -250,7 +253,7 @@ def editorial_trend_chart(
     max_val = max(values)
     y_max = _nice_axis_max(max_val * 1.08)
 
-    x_left = 74.0
+    x_left = 86.0
     x_right = 602.0
     y_top = 48.0
     y_bottom = 266.0
@@ -287,7 +290,6 @@ def editorial_trend_chart(
         "  </defs>",
     ]
 
-    # Zero-based horizontal reference gridlines (0%, 33%, 67%, 100%)
     for step_idx in range(4):
         frac = step_idx / 3.0
         gy = round(y_bottom - frac * plot_h, 1)
@@ -301,7 +303,7 @@ def editorial_trend_chart(
         t_lbl = "0" if step_idx == 0 else _short_value(tick_val, unit)
         lines.append(
             f'  <text x="{fc(x_left - 10)}" y="{fc(gy + 4)}" text-anchor="end" '
-            f'font-size="12" fill="{pal["fg"]}" opacity="0.82">{html.escape(t_lbl)}</text>'
+            f'font-size="11.5" fill="{pal["fg"]}" opacity="0.82">{html.escape(t_lbl)}</text>'
         )
 
     if has_sample:
@@ -310,14 +312,12 @@ def editorial_trend_chart(
             f'font-weight="900" font-style="italic" font-size="92" fill="{pal["accent"]}" opacity="0.22">SAMPLE</text>'
         )
 
-    # Translucent area fill + crisp trajectory polyline
     lines.append(f'  <polygon points="{area_pts}" fill="url(#{safe_grad})"/>')
     lines.append(
         f'  <polyline fill="none" stroke="{pal["accent"]}" stroke-width="4" '
         f'stroke-linejoin="round" stroke-linecap="round" points="{poly_pts}"/>'
     )
 
-    # Data nodes and key value callouts (first, peak if distinct, latest)
     peak_idx = values.index(max_val)
     callout_indices = {0, n - 1}
     if n >= 4 and peak_idx not in callout_indices:
@@ -327,9 +327,7 @@ def editorial_trend_chart(
         is_last = i == n - 1
         title_txt = html.escape(f"{per}: {format_number(val, unit)} {unit}".strip())
         if is_last:
-            lines.append(
-                f'  <circle cx="{fc(x)}" cy="{fc(y)}" r="13" fill="{pal["accent"]}" opacity="0.25"/>'
-            )
+            lines.append(f'  <circle cx="{fc(x)}" cy="{fc(y)}" r="13" fill="{pal["accent"]}" opacity="0.25"/>')
             lines.append(
                 f'  <circle cx="{fc(x)}" cy="{fc(y)}" r="6.5" fill="{pal["highlight"]}" '
                 f'stroke="{pal["bg"]}" stroke-width="2.5"><title>{title_txt}</title></circle>'
@@ -353,7 +351,6 @@ def editorial_trend_chart(
                 f'font-size="{fsize}" font-weight="{weight}" fill="{fill_c}">{lbl}</text>'
             )
 
-    # X-axis period labels
     if n <= 5:
         label_indices = list(range(n))
     else:
@@ -412,7 +409,6 @@ def editorial_bar_chart(
             f'  <rect x="{fc(bar_x)}" y="{fc(bar_y)}" width="{fc(bar_w_max)}" height="{fc(bar_h)}" rx="6" fill="{pal["grid"]}" opacity="0.14"/>',
             f'  <rect x="{fc(bar_x)}" y="{fc(bar_y)}" width="{fc(fill_w)}" height="{fc(bar_h)}" rx="6" fill="{pal["accent"]}"/>',
         ]
-        # Scale ticks at 0%, 50%, 100%
         for frac, anchor in ((0.0, "start"), (0.5, "middle"), (1.0, "end")):
             tx = round(bar_x + frac * bar_w_max, 1)
             tv = "0" if frac == 0.0 else _short_value(round(scale_max * frac, 2), unit)
@@ -426,10 +422,9 @@ def editorial_bar_chart(
         lines.append("</svg>")
         return "\n".join(lines)
 
-    # Multi-point vertical column bar chart (zero-based)
     max_val = max(values)
     y_max = _nice_axis_max(max_val * 1.12)
-    x_left = 74.0
+    x_left = 86.0
     x_right = 608.0
     y_top = 48.0
     y_bottom = 266.0
@@ -461,7 +456,7 @@ def editorial_bar_chart(
         t_lbl = "0" if step_idx == 0 else _short_value(tick_val, unit)
         lines.append(
             f'  <text x="{fc(x_left - 10)}" y="{fc(gy + 4)}" text-anchor="end" '
-            f'font-size="12" fill="{pal["fg"]}" opacity="0.82">{html.escape(t_lbl)}</text>'
+            f'font-size="11.5" fill="{pal["fg"]}" opacity="0.82">{html.escape(t_lbl)}</text>'
         )
 
     for i, (val, per) in enumerate(zip(values, periods)):
@@ -493,6 +488,129 @@ def editorial_bar_chart(
     return "\n".join(lines)
 
 
+def editorial_ranked_bars(
+    items: list[dict],
+    *,
+    unit: str = "",
+    title: str = "Ranked comparison",
+    area_id: str = "shared",
+) -> str:
+    """Horizontal zero-based ranked comparison bar chart for countries, states, or same-unit metrics.
+
+    Each item dict requires: {"label": str, "value": float, "sub": str (optional)}.
+    """
+    if not items:
+        return ""
+
+    pal = AREA_CHART_PALETTES.get(area_id, AREA_CHART_PALETTES["shared"])
+    sorted_items = sorted(items, key=lambda x: float(x["value"]), reverse=True)
+    max_val = max(float(it["value"]) for it in sorted_items)
+    scale_max = _nice_axis_max(max_val * 1.06)
+
+    row_h = 54
+    top_pad = 22
+    bot_pad = 36
+    svg_h = top_pad + len(sorted_items) * row_h + bot_pad
+    bar_x = 185.0
+    bar_max_w = 345.0
+
+    def fc(c: float) -> str:
+        return str(int(c)) if c == int(c) else f"{c:.1f}"
+
+    aria = f"{title}: ranked comparison in {unit}"
+    lines = [
+        f'<svg viewBox="0 0 640 {svg_h}" class="chart-svg line-chart-svg editorial-ranked-svg" role="img" aria-label="{html.escape(aria)}">',
+    ]
+
+    axis_y = top_pad + len(sorted_items) * row_h
+    for frac, anchor in ((0.0, "start"), (0.5, "middle"), (1.0, "end")):
+        gx = round(bar_x + frac * bar_max_w, 1)
+        dash_attr = "" if frac == 0.0 else ' stroke-dasharray="4 5"'
+        op_val = "0.45" if frac == 0.0 else "0.16"
+        lines.append(
+            f'  <line x1="{fc(gx)}" y1="{top_pad - 6}" x2="{fc(gx)}" y2="{axis_y}" '
+            f'stroke="{pal["grid"]}" opacity="{op_val}"{dash_attr}/>'
+        )
+        t_lbl = "0" if frac == 0.0 else _short_value(round(scale_max * frac, 2), unit)
+        lines.append(
+            f'  <text x="{fc(gx)}" y="{axis_y + 22}" text-anchor="{anchor}" '
+            f'font-size="11.5" fill="{pal["fg"]}" opacity="0.8">{html.escape(t_lbl)}</text>'
+        )
+
+    for idx, it in enumerate(sorted_items):
+        val = float(it["value"])
+        lbl = str(it["label"])
+        if len(lbl) > 24:
+            lbl = lbl[:23] + "…"
+        sub = str(it.get("sub", ""))
+        y_row = top_pad + idx * row_h
+        bar_y = y_row + 12
+        bar_h = 26
+        bw = max(6.0, round((max(val, 0.0) / scale_max) * bar_max_w, 1))
+        is_top = idx == 0
+        fill_c = pal["accent"] if is_top else pal["bar_muted"]
+        stroke_attr = f' stroke="{pal["accent"]}" stroke-width="1.5"' if not is_top else ""
+        title_txt = html.escape(f"{it['label']}: {format_number(val, unit)} {unit}".strip())
+
+        lines.append(
+            f'  <text x="{fc(bar_x - 12)}" y="{bar_y + 17}" text-anchor="end" '
+            f'font-size="13.5" font-weight="{"800" if is_top else "600"}" fill="{"#FFFFFF" if is_top else pal["fg"]}">{html.escape(lbl)}</text>'
+        )
+        if sub:
+            lines.append(
+                f'  <text x="{fc(bar_x - 12)}" y="{bar_y + 32}" text-anchor="end" '
+                f'font-size="10.5" fill="{pal["fg"]}" opacity="0.68">{html.escape(sub)}</text>'
+            )
+        lines.append(
+            f'  <rect x="{fc(bar_x)}" y="{bar_y}" width="{fc(bar_max_w)}" height="{bar_h}" rx="4" fill="{pal["grid"]}" opacity="0.10"/>'
+        )
+        lines.append(
+            f'  <rect x="{fc(bar_x)}" y="{bar_y}" width="{fc(bw)}" height="{bar_h}" rx="4" fill="{fill_c}"{stroke_attr}>'
+            f"<title>{title_txt}</title></rect>"
+        )
+        val_txt = html.escape(_short_value(val, unit))
+        lines.append(
+            f'  <text x="{fc(bar_x + bar_max_w + 12)}" y="{bar_y + 18}" text-anchor="start" '
+            f'font-size="14" font-weight="{"800" if is_top else "700"}" fill="{"#FFFFFF" if is_top else pal["fg"]}">{val_txt}</text>'
+        )
+
+    lines.append("</svg>")
+    return "\n".join(lines)
+
+
+def editorial_waffle_grid(
+    percent_value: float,
+    *,
+    label: str = "",
+    area_id: str = "people",
+) -> str:
+    """10x10 editorial waffle proportion grid (100 cells) for percentage metrics."""
+    pal = AREA_CHART_PALETTES.get(area_id, AREA_CHART_PALETTES["shared"])
+    clamped = max(0.0, min(100.0, float(percent_value)))
+    filled = int(round(clamped))
+
+    cell = 20
+    gap = 4
+    step = cell + gap
+    grid_w = 10 * step - gap
+    aria = f"{label}: {format_number(clamped, 'percent')}% ({filled} out of 100 cells shaded)"
+
+    lines = [
+        f'<svg viewBox="0 0 {grid_w} {grid_w}" class="chart-svg waffle-grid-svg" role="img" aria-label="{html.escape(aria)}">',
+    ]
+    for idx in range(100):
+        row = idx // 10
+        col = idx % 10
+        x = col * step
+        y = row * step
+        is_filled = idx < filled
+        fill_c = pal["accent"] if is_filled else pal["grid"]
+        op = "1" if is_filled else "0.16"
+        lines.append(f'  <rect x="{x}" y="{y}" width="{cell}" height="{cell}" rx="3" fill="{fill_c}" opacity="{op}"/>')
+    lines.append("</svg>")
+    return "\n".join(lines)
+
+
 def sparkline_svg(
     points: list[dict],
     *,
@@ -507,7 +625,6 @@ def sparkline_svg(
     values = [float(p["value"]) for p in points]
 
     if len(values) == 1:
-        # Clean calibrated proportion bar for single-point metrics
         return (
             f'<svg viewBox="0 0 {width} {height}" class="sparkline-svg" aria-hidden="true">'
             f'<rect x="0" y="{height // 2 - 5}" width="{width}" height="10" rx="5" fill="{pal["grid"]}" opacity="0.18"/>'
@@ -701,7 +818,6 @@ def state_tile_grid(
             f'  <text x="{cx}" y="{cy}" text-anchor="middle" font-size="13" font-weight="700" fill="{fg}">{html.escape(abbr)}</text>'
         )
 
-    # Separate row beneath for Union Territories
     ut_y = 6 * step + 24
     for idx, ut in enumerate(uts):
         col = idx + 1

@@ -68,13 +68,13 @@
 <section class="section-container metric-main-grid" aria-label="Chart and primary source record">
   <div class="chart-panel">
     <div class="chart-panel-header">
-      <h2 class="chart-panel-title">Over time</h2>
+      <h2 class="chart-panel-title">{% if metric.is_geo_comparison %}By country{% else %}Over time{% endif %}</h2>
       {% if metric.series_delta %}
       <span class="delta-pill">{{ metric.series_delta.full_label }}</span>
       {% endif %}
     </div>
     {{ metric.editorial_chart_svg | safe }}
-    <p class="chart-panel-note">Years run left to right. On the live site the axis starts at zero and every point has its own source record.</p>
+    <p class="chart-panel-note">On the live site every axis starts at zero and every plotted point has its own source record.</p>
   </div>
 
   {% if metric.headline_point %}
@@ -117,30 +117,71 @@
   {% endif %}
 </section>
 
-{% if metric.bar_chart_svg %}
-<section class="section-container secondary-chart-section" aria-labelledby="secondary-chart-heading">
+{% if metric.waffle_svg or metric.bar_chart_svg %}
+<section class="section-container metric-secondary-grid" aria-label="Additional visual perspectives">
+  {% if metric.waffle_svg and metric.headline_point %}
+  <div class="waffle-panel area-chart-panel-{{ metric.area }}">
+    <span class="area-chart-kicker">Proportion out of 100</span>
+    <h2 class="secondary-chart-title">{{ metric.headline_point.compact_value }} <span class="italic-normal">in a 10×10 grid</span></h2>
+    <div class="waffle-body">
+      <div class="waffle-svg-wrap">{{ metric.waffle_svg | safe }}</div>
+      <p class="waffle-caption">Each square represents 1 percentage point out of 100 ({{ metric.headline_point.geography_label }}, {{ metric.headline_point.period_display }}).</p>
+    </div>
+  </div>
+  {% endif %}
+  {% if metric.bar_chart_svg %}
   <div class="secondary-chart-panel">
-    <h2 id="secondary-chart-heading" class="secondary-chart-title">Alternate view · <span class="italic-normal">same zero-based scale</span></h2>
+    <span class="area-chart-kicker">Alternate view</span>
+    <h2 class="secondary-chart-title">Same data · <span class="italic-normal">zero-based scale</span></h2>
     {{ metric.bar_chart_svg | safe }}
   </div>
+  {% endif %}
 </section>
 {% endif %}
 
 {% if metric.has_state_grid %}
 <section class="state-grid-band" aria-labelledby="state-grid-heading">
   <div class="section-container">
-    <h2 id="state-grid-heading" class="state-grid-title">By <span class="italic-normal">Indian</span> state</h2>
-    <p class="state-grid-note">One tile per state, placed roughly by position. A tile grid, not a map. It makes no claim about boundaries.{% if preview %} Shading is SAMPLE.{% endif %}</p>
-    <div class="tile-grid-wrapper">
-      {{ metric.tile_grid_svg | safe }}
-    </div>
-    <div class="tile-legend">
-      <span>Lower</span>
-      <span class="legend-swatch k1"></span>
-      <span class="legend-swatch k2"></span>
-      <span class="legend-swatch k3"></span>
-      <span class="legend-swatch k4"></span>
-      <span>Higher{% if preview %} (SAMPLE shading){% endif %}</span>
+    <div class="state-feature-grid">
+      <div class="state-feature-map">
+        <h2 id="state-grid-heading" class="state-grid-title">By <span class="italic-normal">Indian</span> state</h2>
+        <p class="state-grid-note">One tile per state, placed roughly by position. A tile grid, not a map. It makes no claim about boundaries.{% if preview %} Shading is SAMPLE.{% endif %}</p>
+        <div class="tile-grid-wrapper">
+          {{ metric.tile_grid_svg | safe }}
+        </div>
+        <div class="tile-legend">
+          <span>Lower</span>
+          <span class="legend-swatch k1"></span>
+          <span class="legend-swatch k2"></span>
+          <span class="legend-swatch k3"></span>
+          <span class="legend-swatch k4"></span>
+          <span>Higher{% if preview %} (SAMPLE shading){% endif %}</span>
+        </div>
+      </div>
+      {% if metric.top_states %}
+      <div class="state-feature-sidebar">
+        <div class="state-rank-card">
+          <h3 class="state-rank-heading">Highest reported</h3>
+          {% for st in metric.top_states %}
+          <div class="state-rank-row">
+            <span>{{ st.geography_label }}</span>
+            <strong>{{ st.compact_value }}</strong>
+          </div>
+          {% endfor %}
+        </div>
+        {% if metric.bottom_states %}
+        <div class="state-rank-card state-rank-card-low">
+          <h3 class="state-rank-heading">Lowest reported</h3>
+          {% for st in metric.bottom_states %}
+          <div class="state-rank-row">
+            <span>{{ st.geography_label }}</span>
+            <strong>{{ st.compact_value }}</strong>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      {% endif %}
     </div>
   </div>
 </section>

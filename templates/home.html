@@ -13,6 +13,19 @@
   </h1>
   <p class="hero-lede">Public numbers on food, waste, public money and the AI and quantum industry. Each one shows where it came from, the period it covers and when it was last checked.</p>
   <p class="hero-script">a ledger of public facts</p>
+  {% if total_points > 0 %}
+  <div class="ledger-pulse" aria-label="Published ledger summary">
+    <span class="pulse-item"><strong>{{ metrics | length }}</strong> metrics</span>
+    <span class="pulse-sep" aria-hidden="true">·</span>
+    <span class="pulse-item"><strong>{{ total_points }}</strong> sourced points</span>
+    <span class="pulse-sep" aria-hidden="true">·</span>
+    <span class="pulse-item"><strong>4</strong> areas</span>
+    {% if featured_state_metric %}
+    <span class="pulse-sep" aria-hidden="true">·</span>
+    <span class="pulse-item"><strong>{{ featured_state_metric.state_points | length }}</strong> Indian states &amp; UTs</span>
+    {% endif %}
+  </div>
+  {% endif %}
 </div>
 {% endblock %}
 
@@ -93,11 +106,63 @@
   </div>
 </section>
 
+{% if featured_state_metric %}
+{% set sm = featured_state_metric %}
+<section class="state-grid-band home-state-feature" aria-labelledby="home-state-heading">
+  <div class="section-container">
+    <div class="state-feature-grid">
+      <div class="state-feature-map">
+        <span class="state-feature-kicker">India · {{ sm.latest_state_period }} · {{ sm.state_points | length }} states &amp; UTs</span>
+        <h2 id="home-state-heading" class="state-grid-title">By <span class="italic-normal">Indian</span> state</h2>
+        <p class="state-grid-note"><strong>{{ sm.title }}</strong> ({{ sm.unit }}). One tile per state, placed roughly by position — a tile grid, not a map.</p>
+        <div class="tile-grid-wrapper">
+          {{ sm.tile_grid_svg | safe }}
+        </div>
+        <div class="tile-legend">
+          <span>Lower</span>
+          <span class="legend-swatch k1"></span>
+          <span class="legend-swatch k2"></span>
+          <span class="legend-swatch k3"></span>
+          <span class="legend-swatch k4"></span>
+          <span>Higher</span>
+        </div>
+      </div>
+
+      <div class="state-feature-sidebar">
+        {% if sm.top_states %}
+        <div class="state-rank-card">
+          <h3 class="state-rank-heading">Highest reported</h3>
+          {% for st in sm.top_states %}
+          <div class="state-rank-row">
+            <span>{{ st.geography_label }}</span>
+            <strong>{{ st.compact_value }}</strong>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+        {% if sm.bottom_states %}
+        <div class="state-rank-card state-rank-card-low">
+          <h3 class="state-rank-heading">Lowest reported</h3>
+          {% for st in sm.bottom_states %}
+          <div class="state-rank-row">
+            <span>{{ st.geography_label }}</span>
+            <strong>{{ st.compact_value }}</strong>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+        <a href="{{ root_prefix }}metrics/{{ sm.id }}.html" class="state-feature-cta">Open all {{ sm.state_points | length }} state source records →</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
 {% if visual_cards %}
 <section class="section-container visual-ledger-section" aria-labelledby="visual-ledger-heading">
   <div class="visual-ledger-header">
     <h2 id="visual-ledger-heading" class="section-h2">Across the <span class="italic-normal">ledger</span></h2>
-    <p class="visual-ledger-sub">Every chart starts at zero and links directly to its primary source record.</p>
+    <p class="visual-ledger-sub">Every chart starts at zero and links directly to its primary or allowlisted source record.</p>
   </div>
   <div class="visual-ledger-grid">
     {% for item in visual_cards %}
@@ -106,9 +171,9 @@
     <article class="visual-card visual-card-{{ item.area.id }}">
       <div class="visual-card-top">
         <div class="visual-card-kicker">
-          <a href="{{ root_prefix }}{{ item.area.id }}.html" class="visual-card-area">{{ item.area.label }}</a>
+          <a href="{{ root_prefix }}{{ item.area.id }}.html" class="visual-card-area">{{ item.area.label }} · {{ m.chart_kind_label }}</a>
           {% if m.series_delta %}
-          <span class="delta-pill">{{ m.series_delta.full_label }}</span>
+          <span class="delta-pill">{{ m.series_delta.short_label }}</span>
           {% else %}
           <span class="delta-pill">{{ hp.period_display }}</span>
           {% endif %}

@@ -1751,3 +1751,175 @@ body.page-about .site-footer {
     max-width: 160px;
   }
 }
+
+/* Magazine Ledger Pulse, Indian State Feature Band, Waffle Grid & Area Comparison Panels */
+.ledger-pulse {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin-top: 28px;
+  padding: 10px 18px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: var(--shared-color-lilac, #E6E0FA);
+  font-size: 15px;
+}
+
+.ledger-pulse strong {
+  color: var(--shared-color-marigold, #FFB627);
+  font-weight: 800;
+}
+
+.area-comparison-section {
+  padding-top: 56px;
+  padding-bottom: 16px;
+}
+
+.area-comparison-panel {
+  padding: 32px;
+  background: var(--color-hero-bg, #1B1346);
+  color: var(--color-hero-fg, #E6E0FA);
+  border-top: 10px solid var(--color-accent, #FFB627);
+}
+
+.area-gallery-section {
+  padding-top: 16px;
+  padding-bottom: 48px;
+}
+
+/* State Feature Grid (Choropleth + Highest/Lowest Sidebar) */
+.home-state-feature {
+  margin-top: 24px;
+}
+
+.state-feature-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+.state-feature-map {
+  flex: 3 1 480px;
+}
+
+.state-feature-kicker {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--shared-color-rani, #D81B60);
+  margin-bottom: 8px;
+}
+
+.state-feature-sidebar {
+  flex: 2 1 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.state-rank-card {
+  background: var(--shared-color-white, #FFFFFF);
+  border: 2px solid var(--shared-color-indigo, #1B1346);
+  border-top: 8px solid var(--shared-color-rani, #D81B60);
+  padding: 20px 22px;
+}
+
+.state-rank-card-low {
+  border-top-color: var(--shared-color-marigold, #FFB627);
+}
+
+.state-rank-heading {
+  margin: 0 0 12px;
+  font-family: var(--shared-font-home-display, 'Playfair Display', Georgia, serif);
+  font-weight: 900;
+  font-size: 22px;
+  color: var(--shared-color-indigo, #1B1346);
+}
+
+.state-rank-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--shared-color-lilac, #E6E0FA);
+  font-size: 15px;
+  color: var(--shared-color-indigo, #1B1346);
+}
+
+.state-rank-row:last-child {
+  border-bottom: 0;
+}
+
+.state-feature-cta {
+  display: inline-block;
+  padding: 14px 20px;
+  background: var(--shared-color-indigo, #1B1346);
+  color: var(--shared-color-white, #FFFFFF);
+  font-weight: 700;
+  text-decoration: none;
+  text-align: center;
+}
+
+.state-feature-cta:hover {
+  background: var(--shared-color-rani, #D81B60);
+  text-decoration: none;
+}
+
+/* Metric Secondary Grid (Waffle + Alternate View) */
+.metric-secondary-grid {
+  padding-top: 0;
+  padding-bottom: 56px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  align-items: stretch;
+}
+
+.waffle-panel {
+  flex: 2 1 320px;
+  padding: 28px;
+  background: var(--color-hero-bg, #2A0B1E);
+  color: var(--color-hero-fg, #FFD3E0);
+  border-top: 6px solid var(--color-accent, #FF6B9A);
+}
+
+.waffle-body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+}
+
+.waffle-svg-wrap {
+  width: 210px;
+  max-width: 100%;
+  flex-shrink: 0;
+}
+
+.waffle-caption {
+  flex: 1 1 140px;
+  margin: 0;
+  font-size: 15px;
+  opacity: 0.9;
+}
+
+.metric-secondary-grid .secondary-chart-panel {
+  flex: 3 1 440px;
+}
+
+@media (max-width: 640px) {
+  .area-comparison-panel,
+  .waffle-panel {
+    padding: 20px;
+  }
+
+  .state-feature-grid,
+  .metric-secondary-grid {
+    flex-direction: column;
+  }
+}

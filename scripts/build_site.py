@@ -311,21 +311,18 @@ def build(
     build_date = staleness.resolve_build_date(today)
     ctx = vd.load_context(production=not preview, today=build_date)
 
-    # 1. Scan templates for banned phrases (M1-LNG-01)
     tpl_errors = scan_templates_for_banned_phrases([resolved_tpl_dir], ctx.banned)
     if tpl_errors:
         for err in tpl_errors:
             print(f"error: {err}", file=sys.stderr)
         return 1
 
-    # 2. Validate data files (M0-BLD-02, M1-LNG-01)
     findings, _, docs = vd.validate_tree(resolved_dirs, ctx)
     if findings:
         for item in findings:
             print(f"error: {item}", file=sys.stderr)
         return 1
 
-    # 3. Generate static/css/tokens.css from design/tokens.json (M2-CSS-01)
     make_tokens.generate_tokens_css()
 
     if resolved_out.exists():
@@ -366,23 +363,37 @@ def build(
         count = len(a_metrics)
         meta["count"] = count
         meta["count_str"] = f"{count:02d}"
-        meta["hero_metric"] = a_metrics[0] if a_metrics else None
+        ranked_hero = sorted(
+            a_metrics,
+            key=lambda m: (len(m.get("series_points", [])) > 1, len(m.get("points", []))),
+            reverse=True,
+        )
+        meta["hero_metric"] = ranked_hero[0] if ranked_hero else None
         area_tiles.append(meta)
 
-    visual_cards = [
-        {"area": tile, "metric": tile["hero_metric"]}
-        for tile in area_tiles
-        if tile["hero_metric"] and tile["hero_metric"].get("headline_point")
-    ]
+    visual_cards = []
+    for tile in area_tiles:
+        a_metrics = metrics_by_area[tile["id"]]
+        ordered = sorted(
+            [m for m in a_metrics if m.get("headline_point") and m.get("editorial_chart_svg")],
+            key=lambda m: (len(m.get("series_points", [])) >= 2, len(m.get("points", []))),
+            reverse=True,
+        )
+        for m in ordered[:2]:
+            visual_cards.append({"area": tile, "metric": m})
+
+    featured_state_metric = next(
+        (m for m in enriched_metrics if m.get("has_state_grid") and len(m.get("state_points", [])) >= 10),
+        next((m for m in enriched_metrics if m.get("has_state_grid")), None),
+    )
 
     recent_metrics = sorted(
         [m for m in enriched_metrics if m.get("headline_point")],
-        key=lambda m: m["headline_point"].get("verified_on") or "",
+        key=lambda m: (m["headline_point"].get("verified_on") or "", m["id"]),
         reverse=True,
     )
     paired_scale = pages.select_paired_scale(enriched_metrics, preview=preview)
 
-    # 1. Home page
     home_tpl = env.get_template("home.html")
     home_html = home_tpl.render(
         page_title="Tathya — Facts, kept beside their sources",
@@ -397,18 +408,21 @@ def build(
         total_points=total_points,
         area_tiles=area_tiles,
         visual_cards=visual_cards,
+        featured_state_metric=featured_state_metric,
         recent_metrics=recent_metrics,
         paired_scale=paired_scale,
     )
     (resolved_out / "index.html").write_text(home_html, encoding="utf-8")
 
-    # 2. Area pages
     area_tpl = env.get_template("area.html")
     for area_id in pages.AREA_ORDER:
         info = pages.AREA_META[area_id]
         a_metrics = metrics_by_area[area_id]
-        hero_metric = a_metrics[0] if a_metrics else None
+        tile_for_area = next(t for t in area_tiles if t["id"] == area_id)
+        hero_metric = tile_for_area["hero_metric"]
         area_covers = area_tokens.get(area_id, {}).get("covers", info["tagline"])
+        area_comparison = pages.build_area_comparison(area_id, a_metrics)
+        area_state_metric = next((m for m in a_metrics if m.get("has_state_grid")), None)
         connected_areas = [
             tile for tile in area_tiles
             if tile["id"] != area_id and tile["hero_metric"] and tile["hero_metric"].get("headline_point")
@@ -426,11 +440,12 @@ def build(
             area_covers=area_covers,
             area_metrics=a_metrics,
             hero_metric=hero_metric,
+            area_comparison=area_comparison,
+            area_state_metric=area_state_metric,
             connected_areas=connected_areas,
         )
         (resolved_out / f"{area_id}.html").write_text(area_html, encoding="utf-8")
 
-    # 3. Metric pages
     if enriched_metrics:
         metrics_dir = resolved_out / "metrics"
         metrics_dir.mkdir(parents=True, exist_ok=True)
@@ -438,10 +453,9 @@ def build(
         for m in enriched_metrics:
             area_id = m["area"]
             info = pages.AREA_META[area_id]
-            related_metrics = [
-                other for other in enriched_metrics
-                if other["id"] != m["id"] and other.get("headline_point")
-            ][:3]
+            same_area = [o for o in enriched_metrics if o["area"] == area_id and o["id"] != m["id"] and o.get("headline_point")]
+            other_area = [o for o in enriched_metrics if o["area"] != area_id and o.get("headline_point")]
+            related_metrics = (same_area + other_area)[:3]
             metric_html = metric_tpl.render(
                 page_title=f"Tathya — {m['title']}",
                 root_prefix="../",
@@ -458,7 +472,6 @@ def build(
             )
             (metrics_dir / f"{m['id']}.html").write_text(metric_html, encoding="utf-8")
 
-    # 4. Contribute page
     contribute_tpl = env.get_template("contribute.html")
     contributing_md = (ROOT / "CONTRIBUTING.md").read_text(encoding="utf-8")
     contribute_html = contribute_tpl.render(
@@ -474,7 +487,6 @@ def build(
     )
     (resolved_out / "contribute.html").write_text(contribute_html, encoding="utf-8")
 
-    # 5. About page
     about_tpl = env.get_template("about.html")
     readme_md = (ROOT / "README.md").read_text(encoding="utf-8")
     about_html = about_tpl.render(
@@ -490,7 +502,6 @@ def build(
     )
     (resolved_out / "about.html").write_text(about_html, encoding="utf-8")
 
-    # 6. Scan built dist/ for external requests, cookies, map files, and size budgets (M1-NET-01, M2)
     net_errors = scan_dist(resolved_out)
     if net_errors:
         for err in net_errors:

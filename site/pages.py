@@ -13,6 +13,18 @@ from site import charts, staleness  # noqa: E402
 
 AREA_ORDER = ["people", "planet", "public-money", "industry"]
 
+COUNTRY_NAMES = {
+    "WLD": "World",
+    "IND": "India",
+    "CHN": "China",
+    "USA": "United States",
+    "GBR": "United Kingdom",
+    "BRA": "Brazil",
+    "DEU": "Germany",
+    "JPN": "Japan",
+    "FRA": "France",
+}
+
 AREA_META = {
     "people": {
         "id": "people",
@@ -51,10 +63,8 @@ def load_state_names() -> dict[str, dict]:
 
 
 def format_geography(geo: str, state_map: dict[str, dict]) -> str:
-    if geo == "WLD":
-        return "World"
-    if geo == "IND":
-        return "India"
+    if geo in COUNTRY_NAMES:
+        return COUNTRY_NAMES[geo]
     if geo in state_map:
         return f"{state_map[geo]['name']} ({geo})"
     return geo
@@ -83,6 +93,8 @@ def compact_figure_display(value: int | float, unit: str) -> str:
         return f"{formatted} Mt"
     if u_low.startswith("billion"):
         return f"{formatted} bn"
+    if u_low.startswith("tonnes per person"):
+        return f"{formatted} t"
     return formatted
 
 
@@ -182,8 +194,18 @@ def enrich_metric(doc: dict, build_date: date, state_map: dict[str, dict], previ
     non_state_pts = [p for p in enriched_points if not p["is_state"]]
     state_pts = [p for p in enriched_points if p["is_state"]]
 
-    # Choose headline point: latest WLD or IND or national non-state point; fallback to latest point
-    if non_state_pts:
+    geo_set = {p["geography"] for p in non_state_pts}
+    comparison_points: list[dict] = []
+    if len(geo_set) >= 2:
+        latest_geo_period = max(p["period"] for p in non_state_pts)
+        same_period_geos = [p for p in non_state_pts if p["period"] == latest_geo_period]
+        if len({p["geography"] for p in same_period_geos}) >= 2:
+            comparison_points = sorted(same_period_geos, key=lambda x: float(x["value"]), reverse=True)
+
+    if comparison_points and len(non_state_pts) == len(comparison_points):
+        series_points = comparison_points
+        headline_point = comparison_points[0]
+    elif non_state_pts:
         wld_pts = [p for p in non_state_pts if p["geography"] == "WLD"]
         ind_pts = [p for p in non_state_pts if p["geography"] == "IND"]
         primary_series_pool = wld_pts or ind_pts or non_state_pts
@@ -206,8 +228,33 @@ def enrich_metric(doc: dict, build_date: date, state_map: dict[str, dict], previ
         else ""
     )
 
-    # Editorial charts: choose column bars for 2-4 point series, gradient trend for 5+ points, scale gauge for 1 point
-    if len(series_points) >= 5:
+    is_geo_comparison = bool(comparison_points and len(non_state_pts) == len(comparison_points))
+
+    if is_geo_comparison:
+        ranked_items = [
+            {"label": p["geography_label"], "value": float(p["value"]), "sub": p["period_display"]}
+            for p in comparison_points
+        ]
+        editorial_chart_svg = charts.editorial_ranked_bars(
+            ranked_items,
+            unit=unit,
+            title=annotated["title"],
+            area_id=area_id,
+        )
+        bar_chart_svg = ""
+        chart_kind_label = f"Country comparison · {comparison_points[0]['period_display']}"
+        series_delta = None
+        if len(comparison_points) >= 2 and float(comparison_points[-1]["value"]) > 0:
+            ratio = float(comparison_points[0]["value"]) / float(comparison_points[-1]["value"])
+            series_delta = {
+                "first_period": comparison_points[-1]["geography_label"],
+                "latest_period": comparison_points[0]["geography_label"],
+                "direction": "up",
+                "short_label": f"{ratio:.1f}x span",
+                "ratio_str": f"{ratio:.1f}x",
+                "full_label": f"{ratio:.1f}x highest to lowest ({comparison_points[0]['geography_label']} vs {comparison_points[-1]['geography_label']})",
+            }
+    elif len(series_points) >= 5:
         editorial_chart_svg = charts.editorial_trend_chart(
             series_points,
             unit=unit,
@@ -224,6 +271,7 @@ def enrich_metric(doc: dict, build_date: date, state_map: dict[str, dict], previ
             preview=preview,
         )
         chart_kind_label = "Trajectory over time"
+        series_delta = compute_series_delta(series_points, unit)
     elif 2 <= len(series_points) <= 4:
         editorial_chart_svg = charts.editorial_bar_chart(
             series_points,
@@ -241,6 +289,7 @@ def enrich_metric(doc: dict, build_date: date, state_map: dict[str, dict], previ
             grad_id=f"grad-{annotated['id']}",
         )
         chart_kind_label = "Period-by-period scale"
+        series_delta = compute_series_delta(series_points, unit)
     elif len(series_points) == 1:
         editorial_chart_svg = charts.editorial_bar_chart(
             series_points,
@@ -251,24 +300,37 @@ def enrich_metric(doc: dict, build_date: date, state_map: dict[str, dict], previ
         )
         bar_chart_svg = ""
         chart_kind_label = "Verified benchmark"
+        series_delta = None
     else:
         editorial_chart_svg = ""
         bar_chart_svg = ""
         chart_kind_label = ""
+        series_delta = None
+
+    waffle_svg = ""
+    if headline_point and unit.lower().startswith("percent"):
+        waffle_svg = charts.editorial_waffle_grid(
+            float(headline_point["value"]),
+            label=annotated["title"],
+            area_id=area_id,
+        )
 
     spark_svg = charts.sparkline_svg(series_points, area_id=area_id) if series_points else ""
-    series_delta = compute_series_delta(series_points, unit)
 
     if state_pts:
         latest_state_period = max(p["period"] for p in state_pts)
         latest_state_points = [p for p in state_pts if p["period"] == latest_state_period]
         tile_svg = charts.state_tile_grid(latest_state_points, unit=unit, preview=preview)
+        sorted_states = sorted(latest_state_points, key=lambda x: float(x["value"]), reverse=True)
+        top_states = sorted_states[:5]
+        bottom_states = list(reversed(sorted_states[-5:])) if len(sorted_states) >= 5 else []
     else:
         latest_state_period = None
         latest_state_points = []
         tile_svg = ""
+        top_states = []
+        bottom_states = []
 
-    # Points shown on the metric page: time-series points + latest state points (deduplicated preserving order)
     shown_points: list[dict] = []
     seen_indices: set[int] = set()
     if headline_point:
@@ -298,12 +360,16 @@ def enrich_metric(doc: dict, build_date: date, state_map: dict[str, dict], previ
         "headline_point": headline_point,
         "series_points": series_points,
         "series_delta": series_delta,
+        "is_geo_comparison": is_geo_comparison,
         "state_points": latest_state_points,
+        "top_states": top_states,
+        "bottom_states": bottom_states,
         "latest_state_period": latest_state_period,
         "has_state_grid": bool(latest_state_points),
         "line_chart_svg": line_svg,
         "editorial_chart_svg": editorial_chart_svg,
         "bar_chart_svg": bar_chart_svg,
+        "waffle_svg": waffle_svg,
         "chart_kind_label": chart_kind_label,
         "sparkline_svg": spark_svg,
         "tile_grid_svg": tile_svg,
@@ -314,38 +380,81 @@ def enrich_metric(doc: dict, build_date: date, state_map: dict[str, dict], previ
     return out
 
 
-def select_paired_scale(metrics: list[dict], preview: bool = False) -> dict | None:
-    """Select two comparable points in one shared unit for the home page paired scale (M1-CHT-02, M2-HOM-01).
+def build_area_comparison(area_id: str, area_metrics: list[dict]) -> dict | None:
+    """Build an area-level multi-metric horizontal ranked bar visual when >=2 metrics share one unit."""
+    by_unit: dict[str, list[dict]] = {}
+    for m in area_metrics:
+        if m.get("headline_point"):
+            by_unit.setdefault(m["unit"], []).append(m)
 
-    Priority:
-    1. Two distinct points sharing both unit and period.
-    2. Earliest vs. latest eligible points within the same metric (same unit, zero-based shared scale),
-       preferring the series with the largest ratio so the visual contrast is clear.
-    """
+    best_unit = None
+    best_group: list[dict] = []
+    for unit, group in by_unit.items():
+        if len(group) >= 2 and len(group) > len(best_group):
+            best_unit = unit
+            best_group = group
+
+    if not best_unit or len(best_group) < 2:
+        return None
+
+    items = [
+        {
+            "label": m["title"],
+            "value": float(m["headline_point"]["value"]),
+            "sub": f"{m['headline_point']['geography_label']} · {m['headline_point']['period_display']}",
+        }
+        for m in best_group
+    ]
+    svg = charts.editorial_ranked_bars(
+        items,
+        unit=best_unit,
+        title=f"{AREA_META[area_id]['label']} metrics on one scale",
+        area_id=area_id,
+    )
+    return {
+        "unit": best_unit,
+        "count": len(best_group),
+        "svg": svg,
+        "metrics": best_group,
+    }
+
+
+def select_paired_scale(metrics: list[dict], preview: bool = False) -> dict | None:
+    """Select two comparable points in one shared unit for the home page paired scale (M1-CHT-02, M2-HOM-01)."""
     allowed_statuses = {"verified", "sample"} if preview else {"verified"}
 
-    # Group candidate points by (unit, period)
     by_unit_period: dict[tuple[str, str], list[tuple[dict, dict]]] = {}
     for m in metrics:
         unit = m["unit"]
         for p in m.get("points", []):
-            if p["status"] in allowed_statuses:
+            if p["status"] in allowed_statuses and not p.get("is_state"):
                 key = (unit, p["period"])
                 by_unit_period.setdefault(key, []).append((m, p))
 
     chosen_pair: tuple[tuple[dict, dict], tuple[dict, dict]] | None = None
+
     for (unit, period), items in sorted(by_unit_period.items(), key=lambda kv: kv[0][1], reverse=True):
-        if len(items) >= 2:
-            sorted_items = sorted(items, key=lambda mp: float(mp[1]["value"]), reverse=True)
-            first = sorted_items[0]
-            second = next(
-                (it for it in sorted_items[1:] if float(it[1]["value"]) != float(first[1]["value"]) and float(it[1]["value"]) > 0),
-                sorted_items[1],
-            )
-            chosen_pair = (first, second)
+        distinct_metrics: dict[str, tuple[dict, dict]] = {}
+        for m, p in sorted(items, key=lambda mp: float(mp[1]["value"]), reverse=True):
+            if m["id"] not in distinct_metrics and float(p["value"]) > 0:
+                distinct_metrics[m["id"]] = (m, p)
+        if len(distinct_metrics) >= 2:
+            ranked = sorted(distinct_metrics.values(), key=lambda mp: float(mp[1]["value"]), reverse=True)
+            chosen_pair = (ranked[0], ranked[1])
             break
 
-    # Fallback: compare earliest vs latest eligible point within the same metric (same unit, honest scale)
+    if chosen_pair is None:
+        for (unit, period), items in sorted(by_unit_period.items(), key=lambda kv: kv[0][1], reverse=True):
+            if len(items) >= 2:
+                sorted_items = sorted(items, key=lambda mp: float(mp[1]["value"]), reverse=True)
+                first = sorted_items[0]
+                second = next(
+                    (it for it in sorted_items[1:] if float(it[1]["value"]) != float(first[1]["value"]) and float(it[1]["value"]) > 0),
+                    sorted_items[1],
+                )
+                chosen_pair = (first, second)
+                break
+
     if chosen_pair is None:
         best_ratio = 0.0
         for m in metrics:
