@@ -186,6 +186,19 @@ Every non-obvious decision, why, and what was rejected. **This file exists to st
 
 ---
 
+## D-015 — GitHub Pages official action major versions
+
+**Status:** decided
+**Decision:** `.github/workflows/pages.yml` uses `actions/checkout@v4`, `actions/setup-python@v5`, `actions/configure-pages@v5`, `actions/upload-pages-artifact@v4`, and `actions/deploy-pages@v4` with minimal built-in permissions (`contents: read`, `pages: write`, `id-token: write`) and no secrets or personal access tokens (note: `actions/configure-pages` also tagged `v6.0.0` in March 2026 for Node 24, while GitHub's official Pages custom-workflow documentation specifies `configure-pages@v5`, `upload-pages-artifact@v4`, and `deploy-pages@v4`).
+**Rationale:** GitHub's official Pages actions publish artifacts directly from CI without pushing to a `gh-pages` branch or storing credentials, and `upload-pages-artifact@v4` / `deploy-pages@v4` use the non-deprecated `actions/upload-artifact@v4` backend.
+**Rejected:**
+- *Third-party deploy actions such as `peaceiris/actions-gh-pages`* — requires write access to repository branches and a third-party action dependency.
+- *Deprecated `actions/upload-pages-artifact@v3` or `@v2`* — relies on deprecated artifact v3 APIs.
+
+**Revisit if:** GitHub deprecates `v4`/`v5` of the Pages actions or updates the runner Node runtime requirements.
+
+---
+
 ## Template
 
 ```

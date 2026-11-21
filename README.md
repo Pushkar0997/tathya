@@ -4,7 +4,7 @@
 
 A small, open, static website that shows public numbers on food, waste, public money and the AI and quantum industry, each beside the document it came from, the period it covers and the date a person last checked it. It offers no opinions and asks nothing of the reader.
 
-> **Status: scaffold.** The rules, the data validator and the design are in place. The site itself is being built (see `BRIEF.md`). No real data is published yet, and the site refuses to publish any placeholder data.
+> **Status: M0–M2 built (unverified); awaiting M3 data entry.** The rules, data validator, static site builder, SVG charts, design tokens, and CI workflows are in place (see `BRIEF.md` and `docs/BUILD_REPORT.md`). No real data is published yet, and the production build shows empty states while refusing to publish any placeholder data.
 
 ## The four areas
 
@@ -23,17 +23,18 @@ Every number lives in a JSON file under `data/` with its source link, publicatio
 
 ```
 pip install -r requirements.txt
-python3 -m unittest discover -s tests -v          # correctness tests
+python3 -m unittest discover -s tests -v          # correctness and build tests (49 tests)
 python3 scripts/validate_data.py                  # validate data/ in production mode
+python3 scripts/check_contrast.py                 # verify WCAG 2.x contrast ratios in tokens.json
 python3 scripts/spec_lint.py --strict             # spec consistency
 git config core.hooksPath .githooks               # run the checks before every commit
 ```
 
-Once the builder exists: `python3 scripts/build_site.py --preview` renders the site from SAMPLE fixtures, and `python3 -m http.server -d dist` serves it locally.
+`python3 scripts/build_site.py` builds the production site into `dist/` (showing empty states while `data/` has no metrics). `python3 scripts/build_site.py --preview` renders the site from SAMPLE fixtures in `fixtures/data/`, and `python3 -m http.server -d dist` serves it locally.
 
 ## How this repository is organised
 
-`BRIEF.md` is the one-page status. `CONTRACT.md` holds the rules that must never break. `AGENTS.md` tells any AI coding agent how to work here. `spec/` holds the plan and tasks. `design/` holds the visual design. `AGENT_LOG.md` records who did what.
+`BRIEF.md` is the one-page status. `CONTRACT.md` holds the rules that must never break. `AGENTS.md` tells any AI coding agent how to work here. `spec/` holds the plan and tasks. `design/` holds the visual design. `AGENT_LOG.md` records who did what. `docs/DEPLOY.md` explains GitHub Pages deployment, and `docs/BUILD_REPORT.md` records the M0–M2 build run.
 
 ## Licence
 

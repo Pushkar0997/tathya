@@ -1,0 +1,15 @@
+<svg viewBox="0 0 640 320" class="chart-svg line-chart-svg" role="img" aria-label="Test metric: 2020 to 2022, in percent of population">
+  <g stroke="#FFFFFF" opacity="0.15">
+    <line x1="50" y1="60" x2="610" y2="60"/>
+    <line x1="50" y1="140" x2="610" y2="140"/>
+    <line x1="50" y1="220" x2="610" y2="220"/>
+    <line x1="50" y1="270" x2="610" y2="270"/>
+  </g>
+  <text x="42" y="64" text-anchor="end" font-size="12" fill="#E6E0FA">20.0</text>
+  <text x="42" y="274" text-anchor="end" font-size="12" fill="#E6E0FA">0</text>
+  <polyline fill="none" stroke="#FFB627" stroke-width="4" points="50,165 329.5,112.5 609,60"/>
+  <circle cx="609" cy="60" r="8" fill="#D81B60"/>
+  <text x="50" y="304" font-size="14" fill="#E6E0FA">2020</text>
+  <text x="316" y="304" font-size="14" fill="#E6E0FA">2021</text>
+  <text x="580" y="304" font-size="14" fill="#E6E0FA">2022</text>
+</svg>

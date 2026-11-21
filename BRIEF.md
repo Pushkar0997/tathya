@@ -10,25 +10,24 @@
 
 ## Where things stand
 
-**Milestone:** M0 — Skeleton, CI and deploy
-**Exit criteria:** the site builds offline, refuses SAMPLE data, passes the CI gate, and a human has enabled Pages and seen it live
-**Progress:** 0 of 6 tasks
+**Milestone:** M2 — Design implementation and responsive (M0, M1, M2 built; awaiting independent verification and human M3 data entry)
+**Exit criteria:** verifier reviews M0–M2 tasks (`docs/prompts/verify.md`), binary woff2 fonts are added (`M2-FNT-01`), visual side-by-side review is completed, and Pages is enabled on GitHub
+**Progress:** 27 of 27 M0–M2 tasks attempted (22 done unverified, 5 partial: `M2-FNT-01` fonts pending, `M2-HOM-01`/`M2-ARE-01`/`M2-MET-01`/`M2-PHN-01` visual match not checked)
 
-**Last done:** spec, design (4 packs, 9 reference pages, tokens with computed contrast), and the correctness core: `scripts/validate_data.py` with 33 passing tests, mutation-checked
-**Next:** M0-BLD-01 — create `scripts/build_site.py`, `templates/base.html`, `static/css/base.css`
+**Last done:** M0 (`build_site.py`, `pages.yml`, `DEPLOY.md`, `test_build.py`), M1 (`site/charts.py`, `site/pages.py`, `site/staleness.py`, templates, `check_revisions.py`, `check_links.py`, `link-check.yml`), and M2 (`make_tokens.py`, `tokens.css`, `check_contrast.py`, `LICENSES.md`, responsive CSS, 49 passing unit tests)
+**Next:** Run `docs/prompts/verify.md` in a fresh verifier session to verify M0–M2, download woff2 fonts, and begin human-led M3 data entry.
 
 ---
 
 ## Prompt for the next session
 
-Copy this into any coding agent:
+Copy this into a fresh verifier session (`docs/prompts/verify.md`):
 
 ```
-Read AGENTS.md, then CONTRACT.md, then spec/plan.md and spec/tasks.md.
-Then read the top 3 entries of AGENT_LOG.md.
-
-Tell me which milestone is active and which task you propose next.
-Do not write code yet.
+Read CONTRACT.md, spec/tasks.md, spec/evals.md, and docs/BUILD_REPORT.md.
+Run python3 -m unittest discover -s tests -v, python3 scripts/validate_data.py,
+python3 scripts/spec_lint.py --strict, and bash scripts/spec-gate.sh ci.
+Verify M0, M1 and M2 tasks and report PASS, PARTIAL or FAIL for each criterion.
 ```
 
 ---
@@ -36,8 +35,8 @@ Do not write code yet.
 ## Three things most likely to break
 
 1. **Unverified starter lists.** `config/source_allowlist.json` and the ISO state codes in `config/in_states.json` were written from the author's knowledge. Open each domain and check the ISO 3166-2:IN list before the first real data goes in.
-2. **Fonts.** The design uses about ten families. Self-hosting, subsetting and per-area loading may not work in the build agent's environment; fallbacks are specified and "fonts pending" must be logged, not hidden.
-3. **A build agent weakening the correctness core.** The validator and its tests are fixed. After any run, run `python3 -m unittest discover -s tests -v` and check that `CONTRACT.md` and `scripts/validate_data.py` are unchanged except by a task.
+2. **Fonts and visual check.** Binary `.woff2` files could not be downloaded in the offline build sandbox ("fonts pending" logged; fallback stacks active), and headless browser screenshots timed out in the container ("visual match not checked").
+3. **A build agent weakening the correctness core.** After any run, run `python3 -m unittest discover -s tests -v` and `sha256sum -c docs/PROTECTED_SHA256.txt` to confirm protected files are untouched.
 
 ---
 
@@ -47,16 +46,14 @@ Do not write code yet.
 |---|---|
 | What must never break | `CONTRACT.md` |
 | Rules for agents | `AGENTS.md` |
-| What happened when | `AGENT_LOG.md` |
+| What happened when | `AGENT_LOG.md`, `docs/BUILD_REPORT.md` |
 | What we're building and why | `spec/product.md` |
 | Stack and structure | `spec/architecture.md` |
-| Milestones | `spec/plan.md` |
-| The backlog | `spec/tasks.md` |
-| How correctness is proven | `spec/evals.md` |
-| Pre-ship checklist | `spec/smoke.md` |
+| Milestones and backlog | `spec/plan.md`, `spec/tasks.md` |
+| How correctness is proven | `spec/evals.md`, `spec/smoke.md` |
 | Why things are the way they are | `spec/decisions.md` |
 | The look | `design/DESIGN.md`, `design/tokens.json`, `design/reference/` |
-| Prompts | `docs/prompts/` |
+| Prompts and deploy | `docs/prompts/`, `docs/DEPLOY.md` |
 
 ---
 

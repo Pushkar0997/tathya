@@ -27,15 +27,12 @@ Each ID appears in the name of the test that checks it.
 | G-06 | `config/in_states.json` | 36 regions, 28 states with 28 distinct tiles, includes IN-CT and IN-UT |
 | G-07 | `fixtures/data` in preview mode | 4 files, no findings |
 | G-08 | The published `data/` folder, with the real clock | no findings |
-
-Planned goldens, added to the table above with their tests in the milestone that implements them:
-
-- G-20 — empty-data production build writes `dist/index.html` containing "No verified numbers have been published yet" (M0)
-- G-21 — every page has `lang`, a unique title, a viewport tag, a skip link and one h1 (M0)
-- G-22 — line chart SVG for a fixed input matches a reviewed golden file (M1)
-- G-23 — paired-scale bar widths are proportional to the values (M1)
-- G-24 — tile grid for fixed input places each state on its tile and shades four classes (M1)
-- G-25 — generated tokens.css defines every token in design/tokens.json (M2)
+| G-20 | Empty-data production build | writes `dist/index.html` containing "No verified numbers have been published yet", copies `static/` to `dist/static/`, exits 0 |
+| G-21 | Generated page set (home, 4 areas, contribute, about) | every page has valid HTML5 doctype, `lang="en"`, unique `title`, viewport tag, skip link and one `h1` |
+| G-22 | Fixed 3-point series (`2020`: 10.0, `2021`: 15.0, `2022`: 20.0) | matches `tests/goldens/line_chart.svg` with `role="img"`, `aria-label`, y-axis at `0`, and first/last period labels |
+| G-23 | Paired values `80.0` and `20.0` in `percent` | two SVG bars with width ratio `4.0` on one shared scale; mismatched units rejected |
+| G-24 | State and UT points mapped onto `config/in_states.json` | 28 states placed on their `[row, col]` tile, 8 UTs in a row beneath, 4 equal-interval shade classes, labelled with `abbr` |
+| G-25 | `design/tokens.json` processed by `scripts/make_tokens.py` | writes `static/css/tokens.css` defining every shared and area colour/font token as custom properties scoped by `body.area-<area>` |
 
 ## 3. Invariant tests
 
@@ -43,19 +40,16 @@ Planned goldens, added to the table above with their tests in the milestone that
 |---|---|---|
 | INV-1-T | No unsourced number | A metric with no sources, or a point whose source_id is undefined, yields V-SRC-01 |
 | INV-2-T | No sample data in production | Validating `fixtures/data` in production mode yields only V-SAMPLE-01 findings, at least one |
+| INV-2-B | No sample data in production build | A production build fails without writing `dist/` when `data/` contains a SAMPLE point; `--preview` succeeds with a SAMPLE banner |
 | INV-3-T | Evidence contains the figure | Empty evidence yields V-EVID-01; evidence without the figure yields V-EVID-02 |
 | INV-4-T | Tier matches allowlist | A source on `ourworldindata.org` declared primary yields V-SRC-04 |
 | INV-5-T | Neutral language | The word "freebies" in a title yields V-LANG-01 |
+| INV-5-B | Neutral language in templates and build | A banned phrase in a template or authored data text fails the build naming the file |
 | INV-6-T | Pinned conventions | Geography `India`, period `FY2023` and a text value yield V-GEO-01, V-PER-01, V-VAL-01 |
-
-Planned invariant tests, moved into the table with their tests when implemented:
-
-- INV-2-B — a production build fails when `data/` contains a SAMPLE point (M0)
-- INV-5-B — a banned phrase in a template or authored data text fails the build (M1)
-- INV-7-T — built pages reference no other origin and set no cookie (M1)
-- INV-8-T — the tile grid output has only `rect`, `text` and `title` elements and no map files exist in `dist/` (M1)
-- INV-9-T — a stale point shows the Stale badge on its page (M1)
-- INV-10-T — a changed or removed value without a revision note fails `check_revisions.py` (M1)
+| INV-7-T | No third-party requests or cookies | Built pages reference no external origin on `script`, `link`, `img`, `iframe` or CSS `url()` and set no cookie |
+| INV-8-T | No geographic boundary maps | The tile grid output contains only `rect`, `text` and `title` elements and no map files exist in `dist/` |
+| INV-9-T | Staleness is computed at build time | A point whose `verified_on` plus `stale_after_months` is before `--today` shows the `Stale` badge on its page |
+| INV-10-T | Revisions are visible | A changed or removed value without a `revision_note` fails `scripts/check_revisions.py` naming the point |
 
 ## 4. Negative tests
 
