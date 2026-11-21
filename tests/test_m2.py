@@ -67,8 +67,10 @@ class M2Tests(unittest.TestCase):
         self.assertIn("overflow-x: hidden", base_css)
 
         with tempfile.TemporaryDirectory() as tmp:
+            empty_data = Path(tmp) / "empty_data"
+            empty_data.mkdir()
             out_prod = Path(tmp) / "dist_prod"
-            rc = bs.main(["--out-dir", str(out_prod)])
+            rc = bs.main(["--data-dir", str(empty_data), "--out-dir", str(out_prod)])
             self.assertEqual(rc, 0)
             for area_id, label in [
                 ("people", "People"),
