@@ -1,9 +1,8 @@
 {
   "id": "union-budget-total-expenditure",
-  "title": "Union Budget total expenditure",
   "area": "public-money",
-  "definition": "Total expenditure of the Union Government of India across revenue and capital accounts for a financial year (April to March).",
-  "definition_source": "s1",
+  "title": "Union Budget total expenditure",
+  "definition": "Total expenditure of the Government of India combining revenue expenditure and capital expenditure across each financial year.",
   "unit": "crore INR",
   "stale_after_months": 12,
   "sources": [
@@ -21,15 +20,41 @@
     {
       "geography": "IND",
       "period_kind": "financial_year",
+      "period": "2024-25",
+      "value": 4652867,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Page 1, Budget at a Glance table, row 'Total Expenditure (10+13)': FY 2024-25 (Actuals) is 4652867 crore INR.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21"
+    },
+    {
+      "geography": "IND",
+      "period_kind": "financial_year",
       "period": "2025-26",
       "value": 4964842,
       "status": "estimate",
-      "estimate_method": "Revised Estimates (RE) 2025-26 published in Budget at a Glance, Ministry of Finance.",
       "source_id": "s1",
-      "evidence": "Budget at a Glance, Ministry of Finance: In Revised Estimates (RE) 2025-26, the total expenditure is estimated at â‚¹49,64,842 crore.",
+      "evidence": "Page 1, Budget at a Glance table, row 'Total Expenditure (10+13)': FY 2025-26 (Revised Estimates) is 4964842 crore INR.",
       "entered_by": "agent:gemini",
-      "verified_by": "Pushkar0997",
-      "verified_on": "2026-11-21"
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21",
+      "estimate_method": "Ministry of Finance Revised Estimates for FY 2025-26."
+    },
+    {
+      "geography": "IND",
+      "period_kind": "financial_year",
+      "period": "2026-27",
+      "value": 5347315,
+      "status": "estimate",
+      "source_id": "s1",
+      "evidence": "Page 1, Budget at a Glance table, row 'Total Expenditure (10+13)': FY 2026-27 (Budget Estimates) is 5347315 crore INR.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21",
+      "estimate_method": "Ministry of Finance Budget Estimates for FY 2026-27."
     }
-  ]
+  ],
+  "definition_source": "s1"
 }

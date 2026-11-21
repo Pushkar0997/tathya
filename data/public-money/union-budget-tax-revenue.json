@@ -1,0 +1,60 @@
+{
+  "id": "union-budget-tax-revenue",
+  "area": "public-money",
+  "title": "Union Budget net tax revenue",
+  "definition": "Tax revenue retained by the Central Government net of states' share of Union taxes and duties.",
+  "unit": "crore INR",
+  "stale_after_months": 12,
+  "sources": [
+    {
+      "id": "s1",
+      "publisher": "Ministry of Finance, Government of India",
+      "title": "Budget at a Glance 2026-2027",
+      "url": "https://www.indiabudget.gov.in/doc/Budget_at_Glance/budget_at_a_glance.pdf",
+      "source_type": "primary",
+      "published": "2026-02-01",
+      "retrieved": "2026-11-21"
+    }
+  ],
+  "points": [
+    {
+      "geography": "IND",
+      "period_kind": "financial_year",
+      "period": "2024-25",
+      "value": 2500039,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Page 1, Budget at a Glance table, row 'Tax Revenue (Net to Centre)': FY 2024-25 (Actuals) is 2500039 crore INR.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21"
+    },
+    {
+      "geography": "IND",
+      "period_kind": "financial_year",
+      "period": "2025-26",
+      "value": 2674661,
+      "status": "estimate",
+      "source_id": "s1",
+      "evidence": "Page 1, Budget at a Glance table, row 'Tax Revenue (Net to Centre)': FY 2025-26 (Revised Estimates) is 2674661 crore INR.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21",
+      "estimate_method": "Ministry of Finance Revised Estimates for FY 2025-26."
+    },
+    {
+      "geography": "IND",
+      "period_kind": "financial_year",
+      "period": "2026-27",
+      "value": 2866922,
+      "status": "estimate",
+      "source_id": "s1",
+      "evidence": "Page 1, Budget at a Glance table, row 'Tax Revenue (Net to Centre)': FY 2026-27 (Budget Estimates) is 2866922 crore INR.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21",
+      "estimate_method": "Ministry of Finance Budget Estimates for FY 2026-27."
+    }
+  ],
+  "definition_source": "s1"
+}

@@ -1,0 +1,46 @@
+{
+  "id": "amd-annual-revenue",
+  "area": "industry",
+  "title": "AMD annual net revenue",
+  "definition": "Total annual consolidated net revenue reported by Advanced Micro Devices, Inc. in its Form 10-K filings (fiscal year ends on the last Saturday of December).",
+  "unit": "million USD",
+  "stale_after_months": 12,
+  "sources": [
+    {
+      "id": "s1",
+      "publisher": "Advanced Micro Devices, Inc. (SEC EDGAR)",
+      "title": "Form 10-K for the Fiscal Year Ended December 27, 2025",
+      "url": "https://www.sec.gov/Archives/edgar/data/2488/000000248826000021/amd-20251227.htm",
+      "source_type": "primary",
+      "published": "2026-02-04",
+      "retrieved": "2026-11-21"
+    }
+  ],
+  "points": [
+    {
+      "geography": "USA",
+      "period_kind": "date",
+      "period": "2024-12-28",
+      "value": 25785,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Item 8, Consolidated Statements of Operations (in millions): Total net revenue for fiscal year ended December 28, 2024 was 25,785.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21"
+    },
+    {
+      "geography": "USA",
+      "period_kind": "date",
+      "period": "2025-12-27",
+      "value": 34639,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Item 8, Consolidated Statements of Operations (in millions): Total net revenue for fiscal year ended December 27, 2025 was 34,639.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21"
+    }
+  ],
+  "definition_source": "s1"
+}

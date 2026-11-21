@@ -1,0 +1,58 @@
+{
+  "id": "ionq-annual-net-loss",
+  "area": "industry",
+  "title": "IonQ annual net loss",
+  "definition": "Annual GAAP net loss attributable to IonQ, Inc. (a pure-play quantum computing company) reported in its Form 10-K filings (fiscal year ends December 31).",
+  "unit": "million USD",
+  "stale_after_months": 12,
+  "sources": [
+    {
+      "id": "s1",
+      "publisher": "IonQ, Inc. (SEC EDGAR)",
+      "title": "Form 10-K for the Fiscal Year Ended December 31, 2025",
+      "url": "https://www.sec.gov/Archives/edgar/data/1824920/000119312526071562/ionq-20251231.htm",
+      "source_type": "primary",
+      "published": "2026-02-25",
+      "retrieved": "2026-11-21"
+    }
+  ],
+  "points": [
+    {
+      "geography": "USA",
+      "period_kind": "date",
+      "period": "2023-12-31",
+      "value": 157.8,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Item 1A Risk Factors: Net losses attributable to IonQ, Inc. were $157.8 million for the year ended December 31, 2023.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21"
+    },
+    {
+      "geography": "USA",
+      "period_kind": "date",
+      "period": "2024-12-31",
+      "value": 331.6,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Item 1A Risk Factors: Net losses attributable to IonQ, Inc. were $331.6 million for the year ended December 31, 2024.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21"
+    },
+    {
+      "geography": "USA",
+      "period_kind": "date",
+      "period": "2025-12-31",
+      "value": 510.4,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Item 1A Risk Factors: Net losses attributable to IonQ, Inc. were $510.4 million for the year ended December 31, 2025.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21"
+    }
+  ],
+  "definition_source": "s1"
+}

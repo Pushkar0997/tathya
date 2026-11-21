@@ -1,0 +1,34 @@
+{
+  "id": "ionq-annual-revenue",
+  "area": "industry",
+  "title": "IonQ annual GAAP revenue",
+  "definition": "Total annual GAAP revenue reported by IonQ, Inc. across its quantum computing and networking platform (fiscal year ends December 31).",
+  "unit": "million USD",
+  "stale_after_months": 12,
+  "sources": [
+    {
+      "id": "s1",
+      "publisher": "IonQ, Inc. (SEC EDGAR)",
+      "title": "Form 8-K Exhibit 99.1 — Fourth Quarter and Full Year 2025 Financial Results",
+      "url": "https://www.sec.gov/Archives/edgar/data/1824920/000119312526071520/ionq-ex99_1.htm",
+      "source_type": "primary",
+      "published": "2026-02-25",
+      "retrieved": "2026-11-21"
+    }
+  ],
+  "points": [
+    {
+      "geography": "USA",
+      "period_kind": "date",
+      "period": "2025-12-31",
+      "value": 130.0,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Full Year 2025 Financial Highlights: Reported $130.0 Million of Annual Revenue, first quantum company with more than $100 million of annual GAAP revenue.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21"
+    }
+  ],
+  "definition_source": "s1"
+}

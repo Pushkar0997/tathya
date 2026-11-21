@@ -1,0 +1,60 @@
+{
+  "id": "union-budget-capital-expenditure",
+  "area": "public-money",
+  "title": "Union Budget effective capital expenditure",
+  "definition": "Direct capital expenditure by the Union Government plus grants-in-aid for creation of capital assets.",
+  "unit": "crore INR",
+  "stale_after_months": 12,
+  "sources": [
+    {
+      "id": "s1",
+      "publisher": "Ministry of Finance, Government of India",
+      "title": "Budget at a Glance 2026-2027",
+      "url": "https://www.indiabudget.gov.in/doc/Budget_at_Glance/budget_at_a_glance.pdf",
+      "source_type": "primary",
+      "published": "2026-02-01",
+      "retrieved": "2026-11-21"
+    }
+  ],
+  "points": [
+    {
+      "geography": "IND",
+      "period_kind": "financial_year",
+      "period": "2024-25",
+      "value": 1324609,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Page 1, Budget at a Glance table, row 'Effective Capital Expenditure (12+13)': FY 2024-25 (Actuals) is 1324609 crore INR.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21"
+    },
+    {
+      "geography": "IND",
+      "period_kind": "financial_year",
+      "period": "2025-26",
+      "value": 1403906,
+      "status": "estimate",
+      "source_id": "s1",
+      "evidence": "Page 1, Budget at a Glance table, row 'Effective Capital Expenditure (12+13)': FY 2025-26 (Revised Estimates) is 1403906 crore INR.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21",
+      "estimate_method": "Ministry of Finance Revised Estimates for FY 2025-26."
+    },
+    {
+      "geography": "IND",
+      "period_kind": "financial_year",
+      "period": "2026-27",
+      "value": 1714523,
+      "status": "estimate",
+      "source_id": "s1",
+      "evidence": "Page 1, Budget at a Glance table, row 'Effective Capital Expenditure (12+13)': FY 2026-27 (Budget Estimates) is 1714523 crore INR.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21",
+      "estimate_method": "Ministry of Finance Budget Estimates for FY 2026-27."
+    }
+  ],
+  "definition_source": "s1"
+}
