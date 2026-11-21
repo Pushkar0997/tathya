@@ -1,0 +1,107 @@
+{
+  "id": "undernourishment-prevalence",
+  "title": "Prevalence of undernourishment",
+  "area": "people",
+  "definition": "The share of a population whose usual food intake is too low to meet dietary energy requirements (SDG Indicator 2.1.1).",
+  "definition_source": "s1",
+  "unit": "percent of population",
+  "stale_after_months": 12,
+  "sources": [
+    {
+      "id": "s1",
+      "publisher": "Food and Agriculture Organization of the United Nations (FAO)",
+      "title": "Europe and Central Asia Regional Overview of Food Security and Nutrition 2025: Section 1.1 Prevalence of undernourishment",
+      "url": "https://openknowledge.fao.org/server/api/core/bitstreams/3495f6ce-e185-460a-897d-ecb6495131b7/content/sofi-statistics-reu-2025/prevalence-undernourishment.html",
+      "source_type": "primary",
+      "published": "2025-07-28",
+      "retrieved": "2026-11-21"
+    }
+  ],
+  "points": [
+    {
+      "geography": "WLD",
+      "period_kind": "calendar_year",
+      "period": "2000",
+      "value": 12.7,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Section 1.1, TABLE 1 Prevalence of undernourishment (percent), World row, 2000 column: 12.7",
+      "entered_by": "agent:gemini",
+      "verified_by": "Pushkar0997",
+      "verified_on": "2026-11-21"
+    },
+    {
+      "geography": "WLD",
+      "period_kind": "calendar_year",
+      "period": "2010",
+      "value": 8.7,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Section 1.1, TABLE 1 Prevalence of undernourishment (percent), World row, 2010 column: 8.7",
+      "entered_by": "agent:gemini",
+      "verified_by": "Pushkar0997",
+      "verified_on": "2026-11-21"
+    },
+    {
+      "geography": "WLD",
+      "period_kind": "calendar_year",
+      "period": "2015",
+      "value": 7.7,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Section 1.1, TABLE 1 Prevalence of undernourishment (percent), World row, 2015 column: 7.7",
+      "entered_by": "agent:gemini",
+      "verified_by": "Pushkar0997",
+      "verified_on": "2026-11-21"
+    },
+    {
+      "geography": "WLD",
+      "period_kind": "calendar_year",
+      "period": "2019",
+      "value": 7.5,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Section 1.1, TABLE 1 Prevalence of undernourishment (percent), World row, 2019 column: 7.5",
+      "entered_by": "agent:gemini",
+      "verified_by": "Pushkar0997",
+      "verified_on": "2026-11-21"
+    },
+    {
+      "geography": "WLD",
+      "period_kind": "calendar_year",
+      "period": "2020",
+      "value": 8.5,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Section 1.1, TABLE 1 Prevalence of undernourishment (percent), World row, 2020 column: 8.5",
+      "entered_by": "agent:gemini",
+      "verified_by": "Pushkar0997",
+      "verified_on": "2026-11-21"
+    },
+    {
+      "geography": "WLD",
+      "period_kind": "calendar_year",
+      "period": "2023",
+      "value": 8.5,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Section 1.1, TABLE 1 Prevalence of undernourishment (percent), World row, 2023 column: 8.5",
+      "entered_by": "agent:gemini",
+      "verified_by": "Pushkar0997",
+      "verified_on": "2026-11-21"
+    },
+    {
+      "geography": "WLD",
+      "period_kind": "calendar_year",
+      "period": "2024",
+      "value": 8.2,
+      "status": "estimate",
+      "estimate_method": "Projections based on nowcasts as stated in FAO SOFI 2025 Table 1 note.",
+      "source_id": "s1",
+      "evidence": "Section 1.1, TABLE 1 Prevalence of undernourishment (percent), World row, 2024 column: 8.2",
+      "entered_by": "agent:gemini",
+      "verified_by": "Pushkar0997",
+      "verified_on": "2026-11-21"
+    }
+  ]
+}
