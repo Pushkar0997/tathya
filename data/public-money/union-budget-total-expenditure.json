@@ -1,0 +1,35 @@
+{
+  "id": "union-budget-total-expenditure",
+  "title": "Union Budget total expenditure",
+  "area": "public-money",
+  "definition": "Total expenditure of the Union Government of India across revenue and capital accounts for a financial year (April to March).",
+  "definition_source": "s1",
+  "unit": "crore INR",
+  "stale_after_months": 12,
+  "sources": [
+    {
+      "id": "s1",
+      "publisher": "Ministry of Finance, Government of India",
+      "title": "Budget at a Glance 2026-2027",
+      "url": "https://www.indiabudget.gov.in/doc/Budget_at_Glance/budget_at_a_glance.pdf",
+      "source_type": "primary",
+      "published": "2026-02-01",
+      "retrieved": "2026-11-21"
+    }
+  ],
+  "points": [
+    {
+      "geography": "IND",
+      "period_kind": "financial_year",
+      "period": "2025-26",
+      "value": 4964842,
+      "status": "estimate",
+      "estimate_method": "Revised Estimates (RE) 2025-26 published in Budget at a Glance, Ministry of Finance.",
+      "source_id": "s1",
+      "evidence": "Budget at a Glance, Ministry of Finance: In Revised Estimates (RE) 2025-26, the total expenditure is estimated at ₹49,64,842 crore.",
+      "entered_by": "agent:gemini",
+      "verified_by": "",
+      "verified_on": ""
+    }
+  ]
+}
