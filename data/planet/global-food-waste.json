@@ -1,0 +1,35 @@
+{
+  "id": "global-food-waste",
+  "title": "Global food waste",
+  "area": "planet",
+  "definition": "Total food wasted in households, food services and retail globally in a calendar year.",
+  "definition_source": "s1",
+  "unit": "billion tonnes",
+  "stale_after_months": 12,
+  "sources": [
+    {
+      "id": "s1",
+      "publisher": "Food and Agriculture Organization of the United Nations (FAO)",
+      "title": "Call to Action: Fifth Observance of the International Day of Awareness of Food Loss and Waste (citing UNEP 2024)",
+      "url": "https://openknowledge.fao.org/server/api/core/bitstreams/f6e792f9-f4ae-45fa-9f52-8cafb5741cc7/content",
+      "source_type": "primary",
+      "published": "2024-08-19",
+      "retrieved": "2026-11-21"
+    }
+  ],
+  "points": [
+    {
+      "geography": "WLD",
+      "period_kind": "calendar_year",
+      "period": "2022",
+      "value": 1.05,
+      "status": "estimate",
+      "estimate_method": "Global household, food service and retail food waste estimate from UNEP Food Waste Index Report 2024 cited by FAO.",
+      "source_id": "s1",
+      "evidence": "Page 5, Global facts and figures: An estimated 1.05 billion tonnes of food were wasted in households, food services and in retail in 2022, the equivalent of 132 kg per capita (UNEP, 2024).",
+      "entered_by": "agent:gemini",
+      "verified_by": "Pushkar0997",
+      "verified_on": "2026-11-21"
+    }
+  ]
+}
