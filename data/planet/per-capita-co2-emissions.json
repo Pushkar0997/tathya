@@ -1,0 +1,118 @@
+{
+  "id": "per-capita-co2-emissions",
+  "area": "planet",
+  "title": "CO2 emissions per person",
+  "definition": "Territorial carbon dioxide emissions from fossil fuels and industry divided by total population for each country.",
+  "unit": "tonnes per person",
+  "stale_after_months": 18,
+  "sources": [
+    {
+      "id": "s2",
+      "publisher": "Our World in Data (Global Carbon Project)",
+      "title": "United States - CO2 and Greenhouse Gas Emissions Country Profile",
+      "url": "https://ourworldindata.org/profile/co2/united-states",
+      "source_type": "secondary",
+      "published": "2026-01-01",
+      "retrieved": "2026-11-21"
+    },
+    {
+      "id": "s1",
+      "publisher": "Our World in Data (Global Carbon Project)",
+      "title": "China - CO2 and Greenhouse Gas Emissions Country Profile",
+      "url": "https://ourworldindata.org/profile/co2/china",
+      "source_type": "secondary",
+      "published": "2026-01-01",
+      "retrieved": "2026-11-21"
+    },
+    {
+      "id": "s4",
+      "publisher": "Our World in Data (Global Carbon Project)",
+      "title": "United Kingdom - CO2 and Greenhouse Gas Emissions Country Profile",
+      "url": "https://ourworldindata.org/profile/co2/united-kingdom",
+      "source_type": "secondary",
+      "published": "2026-01-01",
+      "retrieved": "2026-11-21"
+    },
+    {
+      "id": "s5",
+      "publisher": "Our World in Data (Global Carbon Project)",
+      "title": "Brazil - CO2 and Greenhouse Gas Emissions Country Profile",
+      "url": "https://ourworldindata.org/profile/co2/brazil",
+      "source_type": "secondary",
+      "published": "2026-01-01",
+      "retrieved": "2026-11-21"
+    },
+    {
+      "id": "s3",
+      "publisher": "Our World in Data (Global Carbon Project)",
+      "title": "India - CO2 and Greenhouse Gas Emissions Country Profile",
+      "url": "https://ourworldindata.org/profile/co2/india",
+      "source_type": "secondary",
+      "published": "2026-01-01",
+      "retrieved": "2026-11-21"
+    }
+  ],
+  "points": [
+    {
+      "geography": "USA",
+      "period_kind": "calendar_year",
+      "period": "2025",
+      "value": 14.5,
+      "status": "verified",
+      "source_id": "s2",
+      "evidence": "Country profile section 'How much CO2 does the United States emit per person?': CO2 emissions per person were 14.5 tonnes in 2025.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21"
+    },
+    {
+      "geography": "CHN",
+      "period_kind": "calendar_year",
+      "period": "2025",
+      "value": 8.77,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Country profile section 'How much CO2 does China emit per person?': CO2 emissions per person were 8.77 tonnes in 2025.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21"
+    },
+    {
+      "geography": "GBR",
+      "period_kind": "calendar_year",
+      "period": "2025",
+      "value": 4.6,
+      "status": "verified",
+      "source_id": "s4",
+      "evidence": "Country profile section 'How much CO2 does the United Kingdom emit per person?': CO2 emissions per person were 4.6 tonnes in 2025.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21"
+    },
+    {
+      "geography": "BRA",
+      "period_kind": "calendar_year",
+      "period": "2025",
+      "value": 2.33,
+      "status": "verified",
+      "source_id": "s5",
+      "evidence": "Country profile section 'How much CO2 does Brazil emit per person?': CO2 emissions per person were 2.33 tonnes in 2025.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21"
+    },
+    {
+      "geography": "IND",
+      "period_kind": "calendar_year",
+      "period": "2025",
+      "value": 2.19,
+      "status": "verified",
+      "source_id": "s3",
+      "evidence": "Country profile section 'How much CO2 does India emit per person?': CO2 emissions per person were 2.19 tonnes in 2025.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21"
+    }
+  ],
+  "definition_source": "s1"
+}

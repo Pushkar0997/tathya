@@ -1,0 +1,96 @@
+{
+  "id": "global-extreme-poverty",
+  "area": "people",
+  "title": "Global extreme poverty rate",
+  "definition": "The share of the world population living below the international extreme poverty line of $3.00 per person per day in 2021 purchasing power parity (PPP).",
+  "unit": "percent of population",
+  "stale_after_months": 12,
+  "sources": [
+    {
+      "id": "s1",
+      "publisher": "World Bank Group, Poverty and Inequality Platform (PIP)",
+      "title": "March 2026 Update to the Poverty and Inequality Platform (PIP)",
+      "url": "https://openknowledge.worldbank.org/server/api/core/bitstreams/3284631f-f83a-410a-a5be-1c3d2c031e56/content",
+      "source_type": "primary",
+      "published": "2026-03-26",
+      "retrieved": "2026-11-21"
+    }
+  ],
+  "points": [
+    {
+      "geography": "WLD",
+      "period_kind": "calendar_year",
+      "period": "2021",
+      "value": 11.3,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Global poverty table ($3.00 per day, 2021 PPP): world extreme poverty headcount ratio in 2021 is 11.3 percent.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21"
+    },
+    {
+      "geography": "WLD",
+      "period_kind": "calendar_year",
+      "period": "2022",
+      "value": 10.9,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Global poverty table ($3.00 per day, 2021 PPP): world extreme poverty headcount ratio in 2022 is 10.9 percent.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21"
+    },
+    {
+      "geography": "WLD",
+      "period_kind": "calendar_year",
+      "period": "2023",
+      "value": 10.6,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Global poverty table ($3.00 per day, 2021 PPP): world extreme poverty headcount ratio in 2023 is 10.6 percent.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21"
+    },
+    {
+      "geography": "WLD",
+      "period_kind": "calendar_year",
+      "period": "2024",
+      "value": 10.4,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Global poverty table ($3.00 per day, 2021 PPP): world extreme poverty headcount ratio in 2024 is 10.4 percent.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21"
+    },
+    {
+      "geography": "WLD",
+      "period_kind": "calendar_year",
+      "period": "2025",
+      "value": 10.2,
+      "status": "estimate",
+      "source_id": "s1",
+      "evidence": "Global poverty table ($3.00 per day, 2021 PPP): world extreme poverty headcount ratio in 2025 is 10.2 percent.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21",
+      "estimate_method": "World Bank PIP nowcast based on the January 2026 Global Economic Prospects."
+    },
+    {
+      "geography": "WLD",
+      "period_kind": "calendar_year",
+      "period": "2026",
+      "value": 10.0,
+      "status": "estimate",
+      "source_id": "s1",
+      "evidence": "Global poverty table ($3.00 per day, 2021 PPP): world extreme poverty headcount ratio in 2026 is 10.0 percent.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21",
+      "estimate_method": "World Bank PIP nowcast based on the January 2026 Global Economic Prospects."
+    }
+  ],
+  "definition_source": "s1"
+}

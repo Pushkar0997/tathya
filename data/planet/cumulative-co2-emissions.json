@@ -1,0 +1,118 @@
+{
+  "id": "cumulative-co2-emissions",
+  "area": "planet",
+  "title": "Cumulative historical CO2 emissions",
+  "definition": "Total cumulative territorial carbon dioxide emissions from fossil fuels and industry emitted since 1750 through 2025.",
+  "unit": "billion tonnes",
+  "stale_after_months": 18,
+  "sources": [
+    {
+      "id": "s2",
+      "publisher": "Our World in Data (Global Carbon Project)",
+      "title": "United States - CO2 and Greenhouse Gas Emissions Country Profile",
+      "url": "https://ourworldindata.org/profile/co2/united-states",
+      "source_type": "secondary",
+      "published": "2026-01-01",
+      "retrieved": "2026-11-21"
+    },
+    {
+      "id": "s1",
+      "publisher": "Our World in Data (Global Carbon Project)",
+      "title": "China - CO2 and Greenhouse Gas Emissions Country Profile",
+      "url": "https://ourworldindata.org/profile/co2/china",
+      "source_type": "secondary",
+      "published": "2026-01-01",
+      "retrieved": "2026-11-21"
+    },
+    {
+      "id": "s4",
+      "publisher": "Our World in Data (Global Carbon Project)",
+      "title": "United Kingdom - CO2 and Greenhouse Gas Emissions Country Profile",
+      "url": "https://ourworldindata.org/profile/co2/united-kingdom",
+      "source_type": "secondary",
+      "published": "2026-01-01",
+      "retrieved": "2026-11-21"
+    },
+    {
+      "id": "s3",
+      "publisher": "Our World in Data (Global Carbon Project)",
+      "title": "India - CO2 and Greenhouse Gas Emissions Country Profile",
+      "url": "https://ourworldindata.org/profile/co2/india",
+      "source_type": "secondary",
+      "published": "2026-01-01",
+      "retrieved": "2026-11-21"
+    },
+    {
+      "id": "s5",
+      "publisher": "Our World in Data (Global Carbon Project)",
+      "title": "Brazil - CO2 and Greenhouse Gas Emissions Country Profile",
+      "url": "https://ourworldindata.org/profile/co2/brazil",
+      "source_type": "secondary",
+      "published": "2026-01-01",
+      "retrieved": "2026-11-21"
+    }
+  ],
+  "points": [
+    {
+      "geography": "USA",
+      "period_kind": "calendar_year",
+      "period": "2025",
+      "value": 439,
+      "status": "verified",
+      "source_id": "s2",
+      "evidence": "Country profile section 'How much CO2 has the United States produced historically?': The United States has emitted 439 billion tonnes, as of 2025.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21"
+    },
+    {
+      "geography": "CHN",
+      "period_kind": "calendar_year",
+      "period": "2025",
+      "value": 298,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Country profile section 'How much CO2 has China produced historically?': China has emitted 298 billion tonnes, as of 2025.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21"
+    },
+    {
+      "geography": "GBR",
+      "period_kind": "calendar_year",
+      "period": "2025",
+      "value": 80.7,
+      "status": "verified",
+      "source_id": "s4",
+      "evidence": "Country profile section 'How much CO2 has the United Kingdom produced historically?': The United Kingdom has emitted 80.7 billion tonnes, as of 2025.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21"
+    },
+    {
+      "geography": "IND",
+      "period_kind": "calendar_year",
+      "period": "2025",
+      "value": 69.2,
+      "status": "verified",
+      "source_id": "s3",
+      "evidence": "Country profile section 'How much CO2 has India produced historically?': India has emitted 69.2 billion tonnes, as of 2025.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21"
+    },
+    {
+      "geography": "BRA",
+      "period_kind": "calendar_year",
+      "period": "2025",
+      "value": 18.7,
+      "status": "verified",
+      "source_id": "s5",
+      "evidence": "Country profile section 'How much CO2 has Brazil produced historically?': Brazil has emitted 18.7 billion tonnes, as of 2025.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21"
+    }
+  ],
+  "definition_source": "s1"
+}

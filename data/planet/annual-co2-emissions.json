@@ -1,0 +1,76 @@
+{
+  "id": "annual-co2-emissions",
+  "area": "planet",
+  "title": "Annual CO2 emissions by country",
+  "definition": "Territorial carbon dioxide emissions from fossil fuels and industry produced within a country's borders in a calendar year.",
+  "unit": "billion tonnes",
+  "stale_after_months": 18,
+  "sources": [
+    {
+      "id": "s1",
+      "publisher": "Our World in Data (Global Carbon Project)",
+      "title": "China - CO2 and Greenhouse Gas Emissions Country Profile",
+      "url": "https://ourworldindata.org/profile/co2/china",
+      "source_type": "secondary",
+      "published": "2026-01-01",
+      "retrieved": "2026-11-21"
+    },
+    {
+      "id": "s2",
+      "publisher": "Our World in Data (Global Carbon Project)",
+      "title": "United States - CO2 and Greenhouse Gas Emissions Country Profile",
+      "url": "https://ourworldindata.org/profile/co2/united-states",
+      "source_type": "secondary",
+      "published": "2026-01-01",
+      "retrieved": "2026-11-21"
+    },
+    {
+      "id": "s3",
+      "publisher": "Our World in Data (Global Carbon Project)",
+      "title": "India - CO2 and Greenhouse Gas Emissions Country Profile",
+      "url": "https://ourworldindata.org/profile/co2/india",
+      "source_type": "secondary",
+      "published": "2026-01-01",
+      "retrieved": "2026-11-21"
+    }
+  ],
+  "points": [
+    {
+      "geography": "CHN",
+      "period_kind": "calendar_year",
+      "period": "2025",
+      "value": 12.4,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Country profile section 'What are China's total annual emissions?': China emitted 12.4 billion tonnes of CO2 in 2025.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21"
+    },
+    {
+      "geography": "USA",
+      "period_kind": "calendar_year",
+      "period": "2025",
+      "value": 5.04,
+      "status": "verified",
+      "source_id": "s2",
+      "evidence": "Country profile section 'What are the United States' total annual emissions?': The United States emitted 5.04 billion tonnes of CO2 in 2025.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21"
+    },
+    {
+      "geography": "IND",
+      "period_kind": "calendar_year",
+      "period": "2025",
+      "value": 3.2,
+      "status": "verified",
+      "source_id": "s3",
+      "evidence": "Country profile section 'What are India's total annual emissions?': India emitted 3.2 billion tonnes of CO2 in 2025.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-21"
+    }
+  ],
+  "definition_source": "s1"
+}
