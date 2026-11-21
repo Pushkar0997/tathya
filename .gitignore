@@ -8,3 +8,10 @@ __pycache__/
 .env.*
 !.env.example
 node_modules/
+
+venv/
+.venv/
+env/
+**/venv/**
+**/.venv/**
+**/env/**
