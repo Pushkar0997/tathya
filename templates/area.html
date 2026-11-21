@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
-{% block hero_content %}
-<div class="hero-inner area-hero-inner">
+{% block hero_backdrop %}
   {% if current_area == 'people' %}
   <svg aria-hidden="true" class="hero-motif motif-people" viewBox="0 0 600 600">
     <g fill="none" stroke="#FFD3E0" opacity=".28">
@@ -32,7 +31,10 @@
     <circle cx="300" cy="300" r="16" fill="#FF6A1F"/>
   </svg>
   {% endif %}
+{% endblock %}
 
+{% block hero_content %}
+<div class="hero-inner area-hero-inner">
   <h1 class="area-h1">{{ area_info.label }}</h1>
   <p class="area-script">{{ area_info.tagline }}</p>
 

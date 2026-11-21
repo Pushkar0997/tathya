@@ -4,6 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ page_title }}</title>
+  {% if has_fonts_css %}
+  <link rel="stylesheet" href="{{ root_prefix }}static/css/fonts.css">
+  {% endif %}
   {% if has_tokens_css %}
   <link rel="stylesheet" href="{{ root_prefix }}static/css/tokens.css">
   {% endif %}
@@ -16,6 +19,7 @@
   {% endif %}
   {% block hero %}
   <header class="site-hero">
+    {% block hero_backdrop %}{% endblock %}
     <div class="masthead">
       <a href="{{ root_prefix }}index.html" class="wordmark">Tathya</a>
       <nav class="nav-desktop" aria-label="Primary">
