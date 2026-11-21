@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block hero_content %}
+<div class="hero-inner home-hero-inner">
+  <div aria-hidden="true" class="wordmark devanagari-watermark">तथ्य</div>
+  <h1 class="home-h1">
+    <span class="h1-line-1">Facts,</span>
+    <span class="h1-line-2">kept beside</span>
+    <span class="h1-line-3">their sources.</span>
+  </h1>
+  <p class="hero-lede">Public numbers on food, waste, public money and the AI and quantum industry. Each one shows where it came from, the period it covers and when it was last checked.</p>
+  <p class="hero-script">a ledger of public facts</p>
+</div>
+{% endblock %}
+
+{% block content %}
+{% if total_points == 0 %}
+<section class="section-container empty-state-banner" aria-label="Publication status">
+  <p class="empty-notice">No verified numbers have been published yet.</p>
+</section>
+{% endif %}
+
+{% if paired_scale %}
+<section class="section-container paired-scale-section" aria-labelledby="paired-scale-heading">
+  <h2 id="paired-scale-heading" class="home-h2-large">Two figures,<br><span class="text-rani-italic">one scale.</span></h2>
+  <div class="paired-scale-blocks">
+    {% set p1 = paired_scale.first.point %}
+    {% set m1 = paired_scale.first.metric %}
+    {% set p2 = paired_scale.second.point %}
+    {% set m2 = paired_scale.second.metric %}
+    <a href="{{ root_prefix }}metrics/{{ m1.id }}.html" class="paired-block paired-block-primary" style="flex: {{ paired_scale.first.flex }} 1 320px;">
+      {% if preview or p1.is_sample %}
+      <span class="sample-sticker sample-sticker-marigold">SAMPLE</span>
+      {% endif %}
+      <span class="paired-number paired-number-primary">{{ p1.compact_value }}</span>
+      <span class="paired-meta">
+        {{ m1.title }}, {{ p1.geography_label }}, {{ p1.period_display }}
+        · {{ p1.source_badge }} · {{ p1.status_label }}
+        {% if p1.stale %} · Stale{% endif %}
+      </span>
+    </a>
+    <a href="{{ root_prefix }}metrics/{{ m2.id }}.html" class="paired-block paired-block-secondary" style="flex: {{ paired_scale.second.flex }} 1 200px;">
+      <span class="paired-number paired-number-secondary">{{ p2.compact_value }}</span>
+      <span class="paired-meta">
+        {{ m2.title }}, {{ p2.geography_label }}, {{ p2.period_display }}
+        · {{ p2.source_badge }} · {{ p2.status_label }}
+        {% if p2.stale %} · Stale{% endif %}
+      </span>
+    </a>
+  </div>
+  <div class="paired-scale-svg-wrap">
+    {{ paired_scale.svg | safe }}
+  </div>
+  <p class="paired-scale-note">{% if preview %}Placeholders only. {% endif %}On the live site each block links to its source record, and nothing is added beside it.</p>
+</section>
+{% endif %}
+
+<section class="section-container area-tiles-section" aria-labelledby="four-places-heading">
+  <h2 id="four-places-heading" class="section-h2">Four places to start</h2>
+  <div class="area-tiles-grid">
+    {% for tile in area_tiles %}
+    <a href="{{ root_prefix }}{{ tile.id }}.html" class="area-tile area-tile-{{ tile.id }}">
+      <span class="area-tile-title">{{ tile.label }}</span>
+      <span class="area-tile-bottom">
+        <span class="area-tile-blurb">{{ tile.tile_blurb }}</span>
+        <span class="area-tile-count {{ tile.tile_count_class }}">{{ tile.count_str }} metrics</span>
+      </span>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="section-container recently-verified-section" aria-labelledby="recently-verified-heading">
+  <h2 id="recently-verified-heading" class="section-h2">Recently <span class="italic-normal">verified</span></h2>
+  {% if recent_metrics %}
+  <div class="recent-list">
+    {% for m in recent_metrics %}
+    {% set hp = m.headline_point %}
+    <div class="recent-row{% if loop.last %} recent-row-last{% endif %}">
+      <a class="recent-title" href="{{ root_prefix }}metrics/{{ m.id }}.html">{{ m.title }}</a>
+      <span class="recent-geo">{{ hp.compact_value }} ({{ m.unit }}) · {{ hp.geography_label }}, {{ hp.period_display }}</span>
+      <span class="badge badge-marigold">{{ hp.status_label }}</span>
+      {% if hp.stale %}
+      <span class="badge badge-stale">Stale</span>
+      {% endif %}
+      {% if hp.has_revision %}
+      <span class="badge badge-updated">Updated</span>
+      {% endif %}
+      <span class="recent-source-type">{{ hp.source_badge }}</span>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="empty-notice-sub">No metrics have been verified yet. See <a href="{{ root_prefix }}contribute.html">Contribute</a> to add the first sourced figure.</p>
+  {% endif %}
+</section>
+
+<section class="statement-band" aria-label="Editorial principle">
+  <div class="section-container statement-inner">
+    <p class="statement-headline">No opinions. <span class="statement-accent">Only numbers, sources and dates.</span></p>
+    <p class="statement-body">Tathya (तथ्य) is Sanskrit for a fact, that which is so. This site only shows what public sources already say.</p>
+  </div>
+</section>
+{% endblock %}

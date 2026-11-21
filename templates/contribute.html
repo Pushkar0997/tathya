@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block hero_content %}
+<div class="hero-inner page-hero-inner">
+  <h1 class="page-h1">Contributing a number to Tathya</h1>
+  <p class="hero-lede">Anyone can propose a data point through a pull request. A number is accepted only with its source and its evidence.</p>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="section-container prose-container">
+  {{ page_body | safe }}
+</div>
+{% endblock %}

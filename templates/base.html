@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ page_title }}</title>
+  {% if has_tokens_css %}
+  <link rel="stylesheet" href="{{ root_prefix }}static/css/tokens.css">
+  {% endif %}
+  <link rel="stylesheet" href="{{ root_prefix }}static/css/base.css">
+</head>
+<body class="{{ body_class | default('area-shared') }}">
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  {% if preview %}
+  <div class="preview-banner" role="status">Design preview. All values are SAMPLE.</div>
+  {% endif %}
+  {% block hero %}
+  <header class="site-hero">
+    <div class="masthead">
+      <a href="{{ root_prefix }}index.html" class="wordmark">Tathya</a>
+      <nav class="nav-desktop" aria-label="Primary">
+        <a href="{{ root_prefix }}people.html"{% if current_area == 'people' %} class="on" aria-current="page"{% endif %}>People</a>
+        <a href="{{ root_prefix }}planet.html"{% if current_area == 'planet' %} class="on" aria-current="page"{% endif %}>Planet</a>
+        <a href="{{ root_prefix }}public-money.html"{% if current_area == 'public-money' %} class="on" aria-current="page"{% endif %}>Public money</a>
+        <a href="{{ root_prefix }}industry.html"{% if current_area == 'industry' %} class="on" aria-current="page"{% endif %}>Industry</a>
+        <a href="{{ root_prefix }}contribute.html" class="nav-contribute{% if current_page == 'contribute' %} on"{% else %}"{% endif %}>Contribute</a>
+        <a href="{{ root_prefix }}about.html"{% if current_page == 'about' %} class="on" aria-current="page"{% endif %}>About</a>
+      </nav>
+      <details class="nav-mobile">
+        <summary class="menu-button">Menu</summary>
+        <nav class="nav-mobile-panel" aria-label="Mobile primary">
+          <a href="{{ root_prefix }}people.html">People</a>
+          <a href="{{ root_prefix }}planet.html">Planet</a>
+          <a href="{{ root_prefix }}public-money.html">Public money</a>
+          <a href="{{ root_prefix }}industry.html">Industry</a>
+          <a href="{{ root_prefix }}contribute.html">Contribute</a>
+          <a href="{{ root_prefix }}about.html">About</a>
+        </nav>
+      </details>
+    </div>
+    {% block hero_content %}{% endblock %}
+  </header>
+  {% endblock %}
+
+  <main id="main-content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span class="wordmark footer-wordmark">Tathya</span>
+      <span class="footer-note">Public data, shown with its sources.{% if preview %} Design preview. All values are SAMPLE.{% endif %}</span>
+    </div>
+  </footer>
+</body>
+</html>

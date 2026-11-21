@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+
+{% block hero %}
+<header class="site-hero metric-hero">
+  <div class="masthead">
+    <a href="{{ root_prefix }}index.html" class="wordmark">Tathya</a>
+    <nav class="nav-desktop" aria-label="Primary">
+      <a href="{{ root_prefix }}people.html"{% if metric.area == 'people' %} class="on" aria-current="page"{% endif %}>People</a>
+      <a href="{{ root_prefix }}planet.html"{% if metric.area == 'planet' %} class="on" aria-current="page"{% endif %}>Planet</a>
+      <a href="{{ root_prefix }}public-money.html"{% if metric.area == 'public-money' %} class="on" aria-current="page"{% endif %}>Public money</a>
+      <a href="{{ root_prefix }}industry.html"{% if metric.area == 'industry' %} class="on" aria-current="page"{% endif %}>Industry</a>
+      <a href="{{ root_prefix }}contribute.html" class="nav-contribute">Contribute</a>
+      <a href="{{ root_prefix }}about.html">About</a>
+    </nav>
+    <details class="nav-mobile">
+      <summary class="menu-button">Menu</summary>
+      <nav class="nav-mobile-panel" aria-label="Mobile primary">
+        <a href="{{ root_prefix }}people.html">People</a>
+        <a href="{{ root_prefix }}planet.html">Planet</a>
+        <a href="{{ root_prefix }}public-money.html">Public money</a>
+        <a href="{{ root_prefix }}industry.html">Industry</a>
+        <a href="{{ root_prefix }}contribute.html">Contribute</a>
+        <a href="{{ root_prefix }}about.html">About</a>
+      </nav>
+    </details>
+  </div>
+  <div class="hero-inner metric-hero-inner">
+    <p class="breadcrumb">
+      <a href="{{ root_prefix }}index.html">Home</a> /
+      <a href="{{ root_prefix }}{{ metric.area }}.html">{{ area_info.label }}</a> /
+      {{ metric.title }}
+    </p>
+    <h1 class="metric-h1">
+      <span class="metric-h1-main">{{ metric.title_line_1 }}</span>
+      {% if metric.title_line_2 %}
+      <span class="metric-h1-sub">{{ metric.title_line_2 }}</span>
+      {% endif %}
+    </h1>
+    <p class="metric-definition">{{ metric.definition }}</p>
+    {% if metric.headline_point %}
+    {% set hp = metric.headline_point %}
+    <div class="hero-giant-block metric-giant-block">
+      {% if preview or hp.is_sample %}
+      <div class="sample-sticker" aria-label="Sample data">SAMPLE</div>
+      {% endif %}
+      <div class="giant-number metric-giant-number">{{ hp.compact_value }}</div>
+      <div class="giant-caption">
+        {{ metric.unit }}, {{ hp.geography_label }}, {{ hp.period_display }}
+        <span class="badge badge-tag">{{ hp.source_badge }}</span>
+        <span class="badge badge-tag">{{ hp.status_label }}</span>
+        {% if hp.stale %}
+        <span class="badge badge-tag badge-stale">Stale</span>
+        {% endif %}
+        {% if hp.has_revision %}
+        <span class="badge badge-tag badge-updated">Updated: {{ hp.revision_note }}</span>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</header>
+{% endblock %}
+
+{% block content %}
+<section class="section-container metric-main-grid" aria-label="Chart and primary source record">
+  <div class="chart-panel">
+    <h2 class="chart-panel-title">Over time</h2>
+    {{ metric.line_chart_svg | safe }}
+    <p class="chart-panel-note">Years run left to right. On the live site the axis starts at zero and every point has its own source record.</p>
+  </div>
+
+  {% if metric.headline_point %}
+  {% set hp = metric.headline_point %}
+  <div class="source-card metric-source-card">
+    <h2 class="source-card-title">Source record</h2>
+    <div class="card-row">
+      <b>Value</b>
+      <span>
+        <strong>{{ hp.formatted_value }} {{ metric.unit }}</strong>
+        <span class="badge badge-tag">{{ hp.status_label }}</span>
+        <span class="badge badge-tag">{{ hp.source_type_label }}</span>
+        {% if hp.stale %}
+        <span class="badge badge-tag badge-stale">Stale</span>
+        {% endif %}
+        {% if hp.has_revision %}
+        <span class="badge badge-tag badge-updated">Updated</span>
+        {% endif %}
+      </span>
+    </div>
+    <div class="card-row"><b>Source</b><span>{{ hp.source.publisher }} — {{ hp.source.title }}</span></div>
+    <div class="card-row"><b>Source type</b><span>{{ hp.source_type_label }}</span></div>
+    <div class="card-row"><b>Link</b><span><a href="{{ hp.source.url }}" class="source-link">{{ hp.source.url }}</a></span></div>
+    <div class="card-row"><b>Evidence</b><span class="evidence-quote">{{ hp.evidence }}</span></div>
+    <div class="card-row"><b>Period</b><span>{{ hp.period_long }}</span></div>
+    <div class="card-row"><b>Published</b><span>{{ hp.source.published }}</span></div>
+    <div class="card-row"><b>Retrieved</b><span>{{ hp.source.retrieved }}</span></div>
+    <div class="card-row"><b>Last verified</b><span>{{ hp.verified_on }}, by {{ hp.verified_by }} (entered by {{ hp.entered_by }})</span></div>
+    {% if hp.estimate_method %}
+    <div class="card-row"><b>Estimate method</b><span>{{ hp.estimate_method }}</span></div>
+    {% endif %}
+    {% if hp.formula %}
+    <div class="card-row"><b>Formula</b><span>{{ hp.formula }} (inputs: {{ hp.inputs | join(', ') }})</span></div>
+    {% endif %}
+    {% if hp.has_revision %}
+    <div class="card-row"><b>Updated</b><span>{{ hp.revision_note }}</span></div>
+    {% endif %}
+    <div class="card-row card-row-last"><b>Marked stale</b><span>after {{ metric.stale_after_months }} months{% if hp.stale %} (currently Stale){% endif %}</span></div>
+  </div>
+  {% endif %}
+</section>
+
+{% if metric.has_state_grid %}
+<section class="state-grid-band" aria-labelledby="state-grid-heading">
+  <div class="section-container">
+    <h2 id="state-grid-heading" class="state-grid-title">By <span class="italic-normal">Indian</span> state</h2>
+    <p class="state-grid-note">One tile per state, placed roughly by position. A tile grid, not a map. It makes no claim about boundaries.{% if preview %} Shading is SAMPLE.{% endif %}</p>
+    <div class="tile-grid-wrapper">
+      {{ metric.tile_grid_svg | safe }}
+    </div>
+    <div class="tile-legend">
+      <span>Lower</span>
+      <span class="legend-swatch k1"></span>
+      <span class="legend-swatch k2"></span>
+      <span class="legend-swatch k3"></span>
+      <span class="legend-swatch k4"></span>
+      <span>Higher{% if preview %} (SAMPLE shading){% endif %}</span>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="section-container all-points-section" aria-labelledby="all-points-heading">
+  <h2 id="all-points-heading" class="section-h2">All points and source records</h2>
+  <div class="points-ledger">
+    {% for pt in metric.shown_points %}
+    <article class="point-record-card">
+      <div class="point-record-header">
+        <strong class="point-geo-period">{{ pt.geography_label }} · {{ pt.period_display }} ({{ pt.period_long }})</strong>
+        <span class="point-value-badges">
+          <strong class="point-value-num">{{ pt.formatted_value }} {{ metric.unit }}</strong>
+          <span class="badge badge-tag">{{ pt.status_label }}</span>
+          <span class="badge badge-tag">{{ pt.source_type_label }}</span>
+          {% if pt.stale %}
+          <span class="badge badge-tag badge-stale">Stale</span>
+          {% endif %}
+          {% if pt.has_revision %}
+          <span class="badge badge-tag badge-updated">Updated</span>
+          {% endif %}
+        </span>
+      </div>
+      <div class="card-row"><b>Source</b><span>{{ pt.source.publisher }} — {{ pt.source.title }}</span></div>
+      <div class="card-row"><b>Source type</b><span>{{ pt.source_type_label }}</span></div>
+      <div class="card-row"><b>Link</b><span><a href="{{ pt.source.url }}" class="source-link">{{ pt.source.url }}</a></span></div>
+      <div class="card-row"><b>Published / Retrieved</b><span>Published {{ pt.source.published }} · Retrieved {{ pt.source.retrieved }}</span></div>
+      <div class="card-row"><b>Evidence</b><span class="evidence-quote">{{ pt.evidence }}</span></div>
+      {% if pt.estimate_method %}
+      <div class="card-row"><b>Estimate method</b><span>{{ pt.estimate_method }}</span></div>
+      {% endif %}
+      {% if pt.formula %}
+      <div class="card-row"><b>Formula</b><span>{{ pt.formula }} (inputs: {{ pt.inputs | join(', ') }})</span></div>
+      {% endif %}
+      {% if pt.has_revision %}
+      <div class="card-row"><b>Updated</b><span>{{ pt.revision_note }}</span></div>
+      {% endif %}
+      <div class="card-row card-row-last"><b>Verified by</b><span>{{ pt.verified_by }} on {{ pt.verified_on }} (entered by {{ pt.entered_by }})</span></div>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
