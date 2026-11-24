@@ -385,7 +385,11 @@ def enrich_metric(doc: dict, build_date: date, state_map: dict[str, dict], previ
 
 
 def build_area_comparison(area_id: str, area_metrics: list[dict]) -> dict | None:
-    """Build an area-level multi-metric horizontal ranked bar visual when >=2 metrics share one unit."""
+    """Build an area-level multi-metric horizontal ranked bar visual when >=2 metrics share one unit.
+
+    Prevents extreme scale distortion (e.g. $215B AI giants squashing $7M quantum firms into 1-pixel bars)
+    by filtering out metrics below 1% of the maximum when a dedicated perspective board covers them.
+    """
     by_unit: dict[str, list[dict]] = {}
     for m in area_metrics:
         if m.get("headline_point"):
@@ -401,13 +405,26 @@ def build_area_comparison(area_id: str, area_metrics: list[dict]) -> dict | None
     if not best_unit or len(best_group) < 2:
         return None
 
+    max_v = max(float(m["headline_point"]["value"]) for m in best_group)
+    filtered_group = best_group
+    omitted_note = ""
+    if area_id == "industry" and max_v >= 10000:
+        large_only = [m for m in best_group if float(m["headline_point"]["value"]) >= 1000]
+        if len(large_only) >= 2 and len(large_only) < len(best_group):
+            omitted_count = len(best_group) - len(large_only)
+            filtered_group = large_only
+            omitted_note = (
+                f" Showing billion-dollar AI companies ({len(large_only)} metrics) on this scale; "
+                f"{omitted_count} smaller pure-play quantum metrics ($7M–$510M) are plotted on their own scale above so they remain readable."
+            )
+
     items = [
         {
             "label": m["title"],
             "value": float(m["headline_point"]["value"]),
             "sub": f"{m['headline_point']['geography_label']} · {m['headline_point']['period_display']}",
         }
-        for m in best_group
+        for m in filtered_group
     ]
     svg = charts.editorial_ranked_bars(
         items,
@@ -417,9 +434,10 @@ def build_area_comparison(area_id: str, area_metrics: list[dict]) -> dict | None
     )
     return {
         "unit": best_unit,
-        "count": len(best_group),
+        "count": len(filtered_group),
         "svg": svg,
-        "metrics": best_group,
+        "metrics": filtered_group,
+        "omitted_note": omitted_note,
     }
 
 
@@ -565,6 +583,43 @@ def build_area_perspectives(area_id: str, area_metrics: list[dict]) -> list[dict
                     ),
                 })
 
+        # Perspective 2 on Public money: Where Union budget money goes (Interest vs CapEx vs Subsidies)
+        breakdown_ids = [
+            ("Interest payments (debt servicing)", "union-interest-payments"),
+            ("Union capital expenditure (infrastructure)", "union-budget-capital-expenditure"),
+            ("Food subsidy (PMGKAY rations)", "union-food-subsidy"),
+            ("Fertiliser subsidy (agriculture)", "union-fertiliser-subsidy"),
+            ("Petroleum & LPG subsidy", "union-petroleum-subsidy"),
+        ]
+        b_items = []
+        for label, mid in breakdown_ids:
+            bm = by_id.get(mid)
+            if bm and bm.get("headline_point"):
+                hp = bm["headline_point"]
+                b_items.append({
+                    "label": label,
+                    "value": float(hp["value"]),
+                    "sub": hp["period_display"],
+                })
+        if len(b_items) >= 3:
+            svg_b = charts.editorial_ranked_bars(
+                b_items,
+                unit="crore INR",
+                title="Where Union budget spending goes (major buckets)",
+                area_id=area_id,
+            )
+            boards.append({
+                "kicker": "Where the money goes · Union Budget · crore INR",
+                "title": "Debt interest vs. CapEx vs. major subsidies",
+                "badge": f"{len(b_items)} official buckets",
+                "svg": svg_b,
+                "note": (
+                    "Breaks down where central outlays go: debt interest payments, infrastructure capital expenditure, "
+                    "and the three major central subsidies (food, fertiliser, petroleum). "
+                    "Source: Reserve Bank of India Bulletin (Union Budget 2025-26 Assessment, Table 2) and Union Budget at a Glance."
+                ),
+            })
+
     elif area_id == "industry":
         # Perspective 1: Pure-play quantum revenue vs GAAP net loss
         quantum_pairs = [
@@ -645,3 +700,91 @@ def build_area_perspectives(area_id: str, area_metrics: list[dict]) -> list[dict
             })
 
     return boards
+
+
+AREA_GUIDES: dict[str, dict] = {
+    "public-money": {
+        "heading": "Reading Indian public finance",
+        "intro": "A plain-English guide to the terms, units, and spending buckets used in official RBI and Union Budget tables.",
+        "cards": [
+            {
+                "term": "Crore INR (₹ Cr)",
+                "meaning": "1 crore equals 10 million rupees (roughly $120,000 USD). 1 lakh crore equals ₹1,00,000 crore. All India figures follow Indian comma grouping.",
+            },
+            {
+                "term": "Where do subsidies go?",
+                "meaning": "In the Union Budget (FY 2025-26 BE), the two largest subsidies are Food rations (PMGKAY, ₹2,03,000 Cr) and Fertilisers (₹1,68,000 Cr), plus Petroleum/LPG (₹12,000 Cr). At the state level, RBI Statement 36 covers recurring subsidies on electricity/power, food PDS, agriculture, and welfare transfers.",
+            },
+            {
+                "term": "Capital outlay vs. subsidies",
+                "meaning": "Subsidies are recurring yearly payments that lower household or farm costs. Capital outlay (CapEx) builds physical assets—roads, railways, irrigation canals, metros, and hospitals.",
+            },
+            {
+                "term": "Accounts, RE, and BE",
+                "meaning": "Accounts are final audited spending. RE (Revised Estimate) is the mid-year update. BE (Budget Estimate) is the government's planned target for the upcoming financial year (April to March).",
+            },
+        ],
+    },
+    "industry": {
+        "heading": "Reading AI & quantum filings",
+        "intro": "Every company figure comes from audited SEC Form 10-K or Form 8-K filings. Here is what each line means and why AI and quantum are shown on separate scales.",
+        "cards": [
+            {
+                "term": "Capital expenditure (CapEx)",
+                "meaning": "Cash spent buying physical infrastructure. For Alphabet ($91.4B) and Meta ($69.7B) in 2025, this primarily funds AI data centers, GPU/TPU clusters, and network hardware.",
+            },
+            {
+                "term": "R&D spending",
+                "meaning": "Operating expense for engineers, researchers, model training teams, and lab work. In 2025, hyperscaler CapEx surpassed even their massive R&D budgets.",
+            },
+            {
+                "term": "GAAP revenue vs. GAAP net loss",
+                "meaning": "Audited sales beside total bottom-line loss under US accounting rules. Pure-play quantum firms (IonQ, D-Wave, Rigetti) report losses 4x–30x larger than revenue due to hardware R&D and non-cash warrant accounting charges.",
+            },
+            {
+                "term": "Why separate AI & quantum scales?",
+                "meaning": "AI chipmakers and hyperscalers operate at $35B–$215B per year, while pure-play quantum firms generate $7M–$130M per year—roughly 1,000x smaller. Separate scales keep both sectors legible.",
+            },
+        ],
+    },
+    "people": {
+        "heading": "Reading human development numbers",
+        "intro": "International agencies measure poverty and hunger using different thresholds. Each metric page prints the publisher's exact definition.",
+        "cards": [
+            {
+                "term": "Undernourishment (FAO)",
+                "meaning": "Share of the population whose habitual food intake is insufficient to provide the dietary energy required for a normal, active, and healthy life.",
+            },
+            {
+                "term": "Multidimensional Poverty (NITI Aayog)",
+                "meaning": "Tracks simultaneous deprivations across health, education, and standard of living (12 indicators) across all 28 Indian states and 8 union territories.",
+            },
+            {
+                "term": "Extreme poverty ($3.00 PPP)",
+                "meaning": "World Bank international poverty line adjusted for Purchasing Power Parity (2021 prices), allowing fair comparison across countries with different local prices.",
+            },
+        ],
+    },
+    "planet": {
+        "heading": "Reading climate & waste numbers",
+        "intro": "Emissions look very different depending on whether you view national totals, per-person averages, or historical totals since 1750.",
+        "cards": [
+            {
+                "term": "Annual CO₂ (Gt / Mt)",
+                "meaning": "Total carbon dioxide released from fossil fuels and industry in one year. Large populations naturally produce larger national totals.",
+            },
+            {
+                "term": "Per-capita CO₂ (tonnes/person)",
+                "meaning": "National annual emissions divided by population—showing average emissions per resident rather than country size.",
+            },
+            {
+                "term": "Cumulative CO₂ (since 1750)",
+                "meaning": "Total historical carbon dioxide added to the atmosphere over centuries, because CO₂ remains in the atmosphere for hundreds of years.",
+            },
+        ],
+    },
+}
+
+
+def get_area_guide(area_id: str) -> dict | None:
+    return AREA_GUIDES.get(area_id)

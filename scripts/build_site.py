@@ -431,6 +431,7 @@ def build(
         area_covers = area_tokens.get(area_id, {}).get("covers", info["tagline"])
         area_comparison = pages.build_area_comparison(area_id, a_metrics)
         area_perspectives = pages.build_area_perspectives(area_id, a_metrics)
+        area_guide = pages.get_area_guide(area_id)
         area_state_metric = next((m for m in a_metrics if m.get("has_state_grid")), None)
         connected_areas = [
             tile for tile in area_tiles
@@ -451,6 +452,7 @@ def build(
             hero_metric=hero_metric,
             area_comparison=area_comparison,
             area_perspectives=area_perspectives,
+            area_guide=area_guide,
             area_state_metric=area_state_metric,
             connected_areas=connected_areas,
         )
