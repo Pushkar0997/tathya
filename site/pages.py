@@ -620,6 +620,42 @@ def build_area_perspectives(area_id: str, area_metrics: list[dict]) -> list[dict
                 ),
             })
 
+        # Perspective 3 on Public money: Where Union budget money comes from (Taxes vs Borrowings vs Dividends)
+        funding_ids = [
+            ("Net tax revenue (Centre's share)", "union-budget-tax-revenue"),
+            ("Borrowings / fiscal deficit (bonds & small savings)", "union-budget-fiscal-deficit"),
+            ("Non-tax revenue (RBI & PSU dividends, fees)", "union-non-tax-revenue"),
+            ("Disinvestment & loan recoveries", "union-non-debt-capital-receipts"),
+        ]
+        f_items = []
+        for label, mid in funding_ids:
+            fm = by_id.get(mid)
+            if fm and fm.get("headline_point"):
+                hp = fm["headline_point"]
+                f_items.append({
+                    "label": label,
+                    "value": float(hp["value"]),
+                    "sub": hp["period_display"],
+                })
+        if len(f_items) >= 3:
+            svg_f = charts.editorial_ranked_bars(
+                f_items,
+                unit="crore INR",
+                title="Where Union budget funding comes from",
+                area_id=area_id,
+            )
+            boards.append({
+                "kicker": "Where the money comes from · Union Budget · crore INR",
+                "title": "Taxes vs. borrowings vs. non-tax income",
+                "badge": f"{len(f_items)} funding sources",
+                "svg": svg_f,
+                "note": (
+                    "Shows how total Union Budget spending is funded: net tax revenue after state devolution, "
+                    "borrowings (fiscal deficit via government bonds and small savings), RBI/PSU dividends, and disinvestment. "
+                    "Source: Union Budget at a Glance and Reserve Bank of India Bulletin (Union Budget 2025-26 Assessment, Annex I)."
+                ),
+            })
+
     elif area_id == "industry":
         # Perspective 1: Pure-play quantum revenue vs GAAP net loss
         quantum_pairs = [

@@ -1,0 +1,72 @@
+{
+  "id": "union-non-tax-revenue",
+  "area": "public-money",
+  "title": "Union non-tax revenue (dividends & fees)",
+  "definition": "Central government revenue receipts outside taxation—primarily surplus transfers from the Reserve Bank of India, dividends from public sector banks and enterprises, interest receipts, and economic service fees.",
+  "definition_source": "s1",
+  "unit": "crore INR",
+  "sources": [
+    {
+      "id": "s1",
+      "publisher": "Reserve Bank of India (RBI)",
+      "title": "RBI Bulletin — Union Budget 2025-26: An Assessment (Annex I)",
+      "url": "https://m.rbi.org.in/Scripts/BS_ViewBulletin.aspx?Id=23196",
+      "source_type": "primary",
+      "published": "2025-02-19",
+      "retrieved": "2026-11-24"
+    }
+  ],
+  "points": [
+    {
+      "geography": "IND",
+      "period": "2022-23",
+      "period_kind": "financial_year",
+      "value": 285000,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "RBI Bulletin Union Budget 2025-26 Assessment, Annex I, row 'Non-tax Revenue', column 2022-23 (Actuals): 285 thousand crore INR (285,000 crore INR).",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-24"
+    },
+    {
+      "geography": "IND",
+      "period": "2023-24",
+      "period_kind": "financial_year",
+      "value": 402000,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "RBI Bulletin Union Budget 2025-26 Assessment, Annex I, row 'Non-tax Revenue', column 2023-24 (Actuals): 402 thousand crore INR (402,000 crore INR).",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-24"
+    },
+    {
+      "geography": "IND",
+      "period": "2024-25",
+      "period_kind": "financial_year",
+      "value": 531000,
+      "status": "estimate",
+      "source_id": "s1",
+      "evidence": "RBI Bulletin Union Budget 2025-26 Assessment, Annex I, row 'Non-tax Revenue', column 2024-25 (RE): 531 thousand crore INR (531,000 crore INR).",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-24",
+      "estimate_method": "Compiled from official Union Budget documents (Revised Estimates / Budget Estimates) in RBI Bulletin."
+    },
+    {
+      "geography": "IND",
+      "period": "2025-26",
+      "period_kind": "financial_year",
+      "value": 583000,
+      "status": "estimate",
+      "source_id": "s1",
+      "evidence": "RBI Bulletin Union Budget 2025-26 Assessment, Annex I, row 'Non-tax Revenue', column 2025-26 (BE): 583 thousand crore INR (583,000 crore INR).",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-24",
+      "estimate_method": "Compiled from official Union Budget documents (Revised Estimates / Budget Estimates) in RBI Bulletin."
+    }
+  ],
+  "stale_after_months": 12
+}
