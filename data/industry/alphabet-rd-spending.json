@@ -1,0 +1,46 @@
+{
+  "id": "alphabet-rd-spending",
+  "area": "industry",
+  "title": "Alphabet annual R&D spending",
+  "definition": "Research and development operating expense reported on Alphabet Inc.'s Consolidated Statements of Income.",
+  "definition_source": "s1",
+  "unit": "million USD",
+  "sources": [
+    {
+      "id": "s1",
+      "publisher": "Alphabet Inc. (SEC EDGAR)",
+      "title": "Form 8-K Exhibit 99.1: Alphabet Announces Fourth Quarter and Fiscal Year 2025 Results",
+      "url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000012/googexhibit991q42025.htm",
+      "source_type": "primary",
+      "published": "2026-02-04",
+      "retrieved": "2026-11-24"
+    }
+  ],
+  "points": [
+    {
+      "geography": "USA",
+      "period": "2024",
+      "period_kind": "calendar_year",
+      "value": 49326,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Consolidated Statements of Income, 'Research and development', Year Ended December 31, 2024: $49,326 million.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-24"
+    },
+    {
+      "geography": "USA",
+      "period": "2025",
+      "period_kind": "calendar_year",
+      "value": 61087,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Consolidated Statements of Income, 'Research and development', Year Ended December 31, 2025: $61,087 million.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-24"
+    }
+  ],
+  "stale_after_months": 12
+}

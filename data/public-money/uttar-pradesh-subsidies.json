@@ -1,0 +1,120 @@
+{
+  "id": "uttar-pradesh-subsidies",
+  "area": "public-money",
+  "title": "Uttar Pradesh state subsidies",
+  "definition": "Annual revenue expenditure classified as subsidies by the Government of Uttar Pradesh, as compiled in Reserve Bank of India State Finances Statement 36.",
+  "definition_source": "s1",
+  "unit": "crore INR",
+  "sources": [
+    {
+      "id": "s1",
+      "publisher": "Reserve Bank of India (RBI)",
+      "title": "State Finances: A Study of Budgets of 2025-26 — Statement 36: Subsidies",
+      "url": "https://m.rbi.org.in/scripts/PublicationsView.aspx?id=23745",
+      "source_type": "primary",
+      "published": "2026-01-23",
+      "retrieved": "2026-11-24"
+    }
+  ],
+  "points": [
+    {
+      "geography": "IN-UP",
+      "period": "2018-19",
+      "period_kind": "financial_year",
+      "value": 14052.5,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "RBI Statement 36 (Subsidies), row 'Uttar Pradesh', column 2018-19 (Accounts): 14052.5 crore INR.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-24"
+    },
+    {
+      "geography": "IN-UP",
+      "period": "2019-20",
+      "period_kind": "financial_year",
+      "value": 14092.2,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "RBI Statement 36 (Subsidies), row 'Uttar Pradesh', column 2019-20 (Accounts): 14092.2 crore INR.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-24"
+    },
+    {
+      "geography": "IN-UP",
+      "period": "2020-21",
+      "period_kind": "financial_year",
+      "value": 11676.8,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "RBI Statement 36 (Subsidies), row 'Uttar Pradesh', column 2020-21 (Accounts): 11676.8 crore INR.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-24"
+    },
+    {
+      "geography": "IN-UP",
+      "period": "2021-22",
+      "period_kind": "financial_year",
+      "value": 20144.6,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "RBI Statement 36 (Subsidies), row 'Uttar Pradesh', column 2021-22 (Accounts): 20144.6 crore INR.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-24"
+    },
+    {
+      "geography": "IN-UP",
+      "period": "2022-23",
+      "period_kind": "financial_year",
+      "value": 21266.6,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "RBI Statement 36 (Subsidies), row 'Uttar Pradesh', column 2022-23 (Accounts): 21266.6 crore INR.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-24"
+    },
+    {
+      "geography": "IN-UP",
+      "period": "2023-24",
+      "period_kind": "financial_year",
+      "value": 24735.7,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "RBI Statement 36 (Subsidies), row 'Uttar Pradesh', column 2023-24 (Accounts): 24735.7 crore INR.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-24"
+    },
+    {
+      "geography": "IN-UP",
+      "period": "2024-25",
+      "period_kind": "financial_year",
+      "value": 31692.0,
+      "status": "estimate",
+      "source_id": "s1",
+      "evidence": "RBI Statement 36 (Subsidies), row 'Uttar Pradesh', column 2024-25 (Revised Estimates): 31692.0 crore INR.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-24",
+      "estimate_method": "Compiled from official state budget documents (Revised Estimates / Budget Estimates) published by the Reserve Bank of India."
+    },
+    {
+      "geography": "IN-UP",
+      "period": "2025-26",
+      "period_kind": "financial_year",
+      "value": 35131.2,
+      "status": "estimate",
+      "source_id": "s1",
+      "evidence": "RBI Statement 36 (Subsidies), row 'Uttar Pradesh', column 2025-26 (Budget Estimates): 35131.2 crore INR.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-24",
+      "estimate_method": "Compiled from official state budget documents (Revised Estimates / Budget Estimates) published by the Reserve Bank of India."
+    }
+  ],
+  "stale_after_months": 12
+}

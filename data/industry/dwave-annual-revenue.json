@@ -1,0 +1,46 @@
+{
+  "id": "dwave-annual-revenue",
+  "area": "industry",
+  "title": "D-Wave Quantum annual revenue",
+  "definition": "Total GAAP revenue reported by D-Wave Quantum Inc. across quantum computing as a service (QCaaS), system sales, and professional services.",
+  "definition_source": "s1",
+  "unit": "million USD",
+  "sources": [
+    {
+      "id": "s1",
+      "publisher": "D-Wave Quantum Inc. (SEC EDGAR)",
+      "title": "Form 8-K Exhibit 99.1: D-Wave Reports Fourth Quarter and Fiscal Year 2025 Results",
+      "url": "https://www.sec.gov/Archives/edgar/data/1907982/000190798226000022/qbts-20260226xexx991.htm",
+      "source_type": "primary",
+      "published": "2026-02-26",
+      "retrieved": "2026-11-24"
+    }
+  ],
+  "points": [
+    {
+      "geography": "USA",
+      "period": "2024",
+      "period_kind": "calendar_year",
+      "value": 8.8,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Fiscal Year 2025 Financial Highlights: 'Revenue for fiscal 2024 was $8.8 million' (Statement of Operations: $8,827 thousand).",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-24"
+    },
+    {
+      "geography": "USA",
+      "period": "2025",
+      "period_kind": "calendar_year",
+      "value": 24.6,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Fiscal Year 2025 Financial Highlights: 'Revenue for fiscal 2025 was $24.6 million' (Statement of Operations: $24,587 thousand).",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-24"
+    }
+  ],
+  "stale_after_months": 12
+}

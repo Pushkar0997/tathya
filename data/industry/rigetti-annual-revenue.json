@@ -1,0 +1,46 @@
+{
+  "id": "rigetti-annual-revenue",
+  "area": "industry",
+  "title": "Rigetti Computing annual revenue",
+  "definition": "Total GAAP revenues reported by Rigetti Computing, Inc. from quantum computing systems, cloud access, and development contracts.",
+  "definition_source": "s1",
+  "unit": "million USD",
+  "sources": [
+    {
+      "id": "s1",
+      "publisher": "Rigetti Computing, Inc. (SEC EDGAR)",
+      "title": "Form 8-K Exhibit 99.1: Rigetti Computing Reports Fourth Quarter and Full-Year 2025 Financial Results",
+      "url": "https://www.sec.gov/Archives/edgar/data/1838359/000110465926023446/rgti-20260304xex99d1.htm",
+      "source_type": "primary",
+      "published": "2026-03-04",
+      "retrieved": "2026-11-24"
+    }
+  ],
+  "points": [
+    {
+      "geography": "USA",
+      "period": "2024",
+      "period_kind": "calendar_year",
+      "value": 10.8,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Consolidated Statements of Operations, 'Total revenues', Year Ended December 31, 2024: $10,790 thousand ($10.8 million).",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-24"
+    },
+    {
+      "geography": "USA",
+      "period": "2025",
+      "period_kind": "calendar_year",
+      "value": 7.1,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Full-Year 2025 Financial Highlights: 'Total revenues for the twelve months ended December 31, 2025 were $7.1 million' (Statement of Operations: $7,088 thousand).",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-24"
+    }
+  ],
+  "stale_after_months": 12
+}

@@ -1,0 +1,46 @@
+{
+  "id": "meta-ai-capex",
+  "area": "industry",
+  "title": "Meta annual capital expenditure",
+  "definition": "Purchases of property and equipment reported on Meta Platforms, Inc.'s Consolidated Statements of Cash Flows, covering data centers, servers, and network infrastructure.",
+  "definition_source": "s1",
+  "unit": "million USD",
+  "sources": [
+    {
+      "id": "s1",
+      "publisher": "Meta Platforms, Inc. (SEC EDGAR)",
+      "title": "Form 8-K Exhibit 99.1: Meta Reports Fourth Quarter and Full Year 2025 Results",
+      "url": "https://www.sec.gov/Archives/edgar/data/1326801/000162828026003832/meta-12312025xexhibit991.htm",
+      "source_type": "primary",
+      "published": "2026-01-28",
+      "retrieved": "2026-11-24"
+    }
+  ],
+  "points": [
+    {
+      "geography": "USA",
+      "period": "2024",
+      "period_kind": "calendar_year",
+      "value": 37256,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Consolidated Statements of Cash Flows, 'Purchases of property and equipment', Twelve Months Ended December 31, 2024: $37,256 million.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-24"
+    },
+    {
+      "geography": "USA",
+      "period": "2025",
+      "period_kind": "calendar_year",
+      "value": 69691,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Consolidated Statements of Cash Flows, 'Purchases of property and equipment', Twelve Months Ended December 31, 2025: $69,691 million.",
+      "entered_by": "agent:gemini",
+      "verified_by": "agent:gemini-verifier",
+      "verified_on": "2026-11-24"
+    }
+  ],
+  "stale_after_months": 12
+}
