@@ -311,18 +311,21 @@ def build(
     build_date = staleness.resolve_build_date(today)
     ctx = vd.load_context(production=not preview, today=build_date)
 
+    # 1. Scan templates for banned phrases (M1-LNG-01)
     tpl_errors = scan_templates_for_banned_phrases([resolved_tpl_dir], ctx.banned)
     if tpl_errors:
         for err in tpl_errors:
             print(f"error: {err}", file=sys.stderr)
         return 1
 
+    # 2. Validate data files (M0-BLD-02, M1-LNG-01)
     findings, _, docs = vd.validate_tree(resolved_dirs, ctx)
     if findings:
         for item in findings:
             print(f"error: {item}", file=sys.stderr)
         return 1
 
+    # 3. Generate static/css/tokens.css from design/tokens.json (M2-CSS-01)
     make_tokens.generate_tokens_css()
 
     if resolved_out.exists():
@@ -363,6 +366,7 @@ def build(
         count = len(a_metrics)
         meta["count"] = count
         meta["count_str"] = f"{count:02d}"
+        # Prefer a multi-point or country-comparison metric as the area hero when available
         ranked_hero = sorted(
             a_metrics,
             key=lambda m: (len(m.get("series_points", [])) > 1, len(m.get("points", []))),
@@ -371,6 +375,7 @@ def build(
         meta["hero_metric"] = ranked_hero[0] if ranked_hero else None
         area_tiles.append(meta)
 
+    # Home visual gallery: show up to 2 richest visual cards per area (up to 6 total) for editorial variety
     visual_cards = []
     for tile in area_tiles:
         a_metrics = metrics_by_area[tile["id"]]
@@ -382,6 +387,7 @@ def build(
         for m in ordered[:2]:
             visual_cards.append({"area": tile, "metric": m})
 
+    # Featured Indian state tile-grid metric (for Home & Area magazine feature band)
     featured_state_metric = next(
         (m for m in enriched_metrics if m.get("has_state_grid") and len(m.get("state_points", [])) >= 10),
         next((m for m in enriched_metrics if m.get("has_state_grid")), None),
@@ -394,6 +400,7 @@ def build(
     )
     paired_scale = pages.select_paired_scale(enriched_metrics, preview=preview)
 
+    # 1. Home page
     home_tpl = env.get_template("home.html")
     home_html = home_tpl.render(
         page_title="Tathya — Facts, kept beside their sources",
@@ -414,6 +421,7 @@ def build(
     )
     (resolved_out / "index.html").write_text(home_html, encoding="utf-8")
 
+    # 2. Area pages
     area_tpl = env.get_template("area.html")
     for area_id in pages.AREA_ORDER:
         info = pages.AREA_META[area_id]
@@ -422,6 +430,7 @@ def build(
         hero_metric = tile_for_area["hero_metric"]
         area_covers = area_tokens.get(area_id, {}).get("covers", info["tagline"])
         area_comparison = pages.build_area_comparison(area_id, a_metrics)
+        area_perspectives = pages.build_area_perspectives(area_id, a_metrics)
         area_state_metric = next((m for m in a_metrics if m.get("has_state_grid")), None)
         connected_areas = [
             tile for tile in area_tiles
@@ -441,11 +450,13 @@ def build(
             area_metrics=a_metrics,
             hero_metric=hero_metric,
             area_comparison=area_comparison,
+            area_perspectives=area_perspectives,
             area_state_metric=area_state_metric,
             connected_areas=connected_areas,
         )
         (resolved_out / f"{area_id}.html").write_text(area_html, encoding="utf-8")
 
+    # 3. Metric pages
     if enriched_metrics:
         metrics_dir = resolved_out / "metrics"
         metrics_dir.mkdir(parents=True, exist_ok=True)
@@ -472,6 +483,7 @@ def build(
             )
             (metrics_dir / f"{m['id']}.html").write_text(metric_html, encoding="utf-8")
 
+    # 4. Contribute page
     contribute_tpl = env.get_template("contribute.html")
     contributing_md = (ROOT / "CONTRIBUTING.md").read_text(encoding="utf-8")
     contribute_html = contribute_tpl.render(
@@ -487,6 +499,7 @@ def build(
     )
     (resolved_out / "contribute.html").write_text(contribute_html, encoding="utf-8")
 
+    # 5. About page
     about_tpl = env.get_template("about.html")
     readme_md = (ROOT / "README.md").read_text(encoding="utf-8")
     about_html = about_tpl.render(
@@ -502,6 +515,7 @@ def build(
     )
     (resolved_out / "about.html").write_text(about_html, encoding="utf-8")
 
+    # 6. Scan built dist/ for external requests, cookies, map files, and size budgets (M1-NET-01, M2)
     net_errors = scan_dist(resolved_out)
     if net_errors:
         for err in net_errors:

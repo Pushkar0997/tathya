@@ -62,6 +62,27 @@
 {% endblock %}
 
 {% block content %}
+{% if area_perspectives %}
+<section class="section-container area-perspectives-section" aria-labelledby="area-perspectives-heading">
+  <h2 id="area-perspectives-heading" class="connected-strip-title">Different <span class="italic-normal">perspectives</span></h2>
+  <div class="perspectives-grid{% if area_perspectives | length == 1 %} perspectives-grid-single{% endif %}">
+    {% for board in area_perspectives %}
+    <div class="area-comparison-panel area-chart-panel-{{ current_area }} perspective-card">
+      <div class="area-chart-header">
+        <div>
+          <span class="area-chart-kicker">{{ board.kicker }}</span>
+          <h3 class="area-chart-title">{{ board.title }}</h3>
+        </div>
+        <span class="delta-pill">{{ board.badge }}</span>
+      </div>
+      {{ board.svg | safe }}
+      <p class="area-chart-note">{{ board.note }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
 {% if area_comparison %}
 <section class="section-container area-comparison-section" aria-labelledby="area-comparison-heading">
   <div class="area-comparison-panel area-chart-panel-{{ current_area }}">

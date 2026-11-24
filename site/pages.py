@@ -194,6 +194,7 @@ def enrich_metric(doc: dict, build_date: date, state_map: dict[str, dict], previ
     non_state_pts = [p for p in enriched_points if not p["is_state"]]
     state_pts = [p for p in enriched_points if p["is_state"]]
 
+    # Detect cross-geography comparison metrics (multiple countries in one latest period)
     geo_set = {p["geography"] for p in non_state_pts}
     comparison_points: list[dict] = []
     if len(geo_set) >= 2:
@@ -202,6 +203,7 @@ def enrich_metric(doc: dict, build_date: date, state_map: dict[str, dict], previ
         if len({p["geography"] for p in same_period_geos}) >= 2:
             comparison_points = sorted(same_period_geos, key=lambda x: float(x["value"]), reverse=True)
 
+    # Choose headline point: latest WLD or IND or highest comparison point
     if comparison_points and len(non_state_pts) == len(comparison_points):
         series_points = comparison_points
         headline_point = comparison_points[0]
@@ -230,6 +232,7 @@ def enrich_metric(doc: dict, build_date: date, state_map: dict[str, dict], previ
 
     is_geo_comparison = bool(comparison_points and len(non_state_pts) == len(comparison_points))
 
+    # Choose the strongest editorial chart for the data shape
     if is_geo_comparison:
         ranked_items = [
             {"label": p["geography_label"], "value": float(p["value"]), "sub": p["period_display"]}
@@ -307,6 +310,7 @@ def enrich_metric(doc: dict, build_date: date, state_map: dict[str, dict], previ
         chart_kind_label = ""
         series_delta = None
 
+    # Editorial 10x10 waffle grid for percentage metrics
     waffle_svg = ""
     if headline_point and unit.lower().startswith("percent"):
         waffle_svg = charts.editorial_waffle_grid(
@@ -420,7 +424,13 @@ def build_area_comparison(area_id: str, area_metrics: list[dict]) -> dict | None
 
 
 def select_paired_scale(metrics: list[dict], preview: bool = False) -> dict | None:
-    """Select two comparable points in one shared unit for the home page paired scale (M1-CHT-02, M2-HOM-01)."""
+    """Select two comparable points in one shared unit for the home page paired scale (M1-CHT-02, M2-HOM-01).
+
+    Priority:
+    1. Two distinct metrics sharing both unit and period (preferring non-state national/world points).
+    2. Two geographies in the same metric sharing unit and period.
+    3. Earliest vs. latest eligible points within the same metric (same unit, zero-based shared scale).
+    """
     allowed_statuses = {"verified", "sample"} if preview else {"verified"}
 
     by_unit_period: dict[tuple[str, str], list[tuple[dict, dict]]] = {}
@@ -433,6 +443,7 @@ def select_paired_scale(metrics: list[dict], preview: bool = False) -> dict | No
 
     chosen_pair: tuple[tuple[dict, dict], tuple[dict, dict]] | None = None
 
+    # Priority 1: two DIFFERENT metrics sharing (unit, period)
     for (unit, period), items in sorted(by_unit_period.items(), key=lambda kv: kv[0][1], reverse=True):
         distinct_metrics: dict[str, tuple[dict, dict]] = {}
         for m, p in sorted(items, key=lambda mp: float(mp[1]["value"]), reverse=True):
@@ -443,6 +454,7 @@ def select_paired_scale(metrics: list[dict], preview: bool = False) -> dict | No
             chosen_pair = (ranked[0], ranked[1])
             break
 
+    # Priority 2: two geographies in the same metric sharing (unit, period)
     if chosen_pair is None:
         for (unit, period), items in sorted(by_unit_period.items(), key=lambda kv: kv[0][1], reverse=True):
             if len(items) >= 2:
@@ -455,6 +467,7 @@ def select_paired_scale(metrics: list[dict], preview: bool = False) -> dict | No
                 chosen_pair = (first, second)
                 break
 
+    # Priority 3: earliest vs latest eligible point in the same metric
     if chosen_pair is None:
         best_ratio = 0.0
         for m in metrics:
@@ -503,3 +516,132 @@ def select_paired_scale(metrics: list[dict], preview: bool = False) -> dict | No
         "second": {"metric": m2, "point": p2, "flex": flex_2},
         "svg": svg,
     }
+
+
+def build_area_perspectives(area_id: str, area_metrics: list[dict]) -> list[dict]:
+    """Build multi-perspective paired comparison boards derived strictly from verified metrics."""
+    by_id = {m["id"]: m for m in area_metrics}
+    boards: list[dict] = []
+
+    if area_id == "public-money":
+        sub_m = by_id.get("indian-state-subsidies")
+        cap_m = by_id.get("indian-state-capital-outlay")
+        if sub_m and cap_m:
+            sub_states = {p["geography"]: p for p in sub_m.get("state_points", [])}
+            cap_states = {p["geography"]: p for p in cap_m.get("state_points", [])}
+            common = [g for g in sub_states if g in cap_states]
+            common.sort(key=lambda g: float(sub_states[g]["value"]), reverse=True)
+            top_states = common[:8]
+            if len(top_states) >= 3:
+                rows = []
+                for g in top_states:
+                    sp = sub_states[g]
+                    cp = cap_states[g]
+                    ratio = float(sp["value"]) / max(float(cp["value"]), 1e-9)
+                    sub_lbl = f"Subsidies {ratio:.2f}x capex" if ratio >= 1.0 else f"Capex {1.0/ratio:.1f}x subsidies"
+                    rows.append({
+                        "label": sp["geography_label"],
+                        "value_a": float(sp["value"]),
+                        "value_b": float(cp["value"]),
+                        "sub": sub_lbl,
+                    })
+                period_lbl = sub_m.get("latest_state_period") or "FY 2025-26"
+                svg = charts.editorial_dual_bars(
+                    rows,
+                    series_a_label="Budgeted subsidies",
+                    series_b_label="Capital outlay",
+                    unit=sub_m["unit"],
+                    title=f"State subsidies vs. capital outlay ({period_lbl})",
+                    area_id=area_id,
+                )
+                boards.append({
+                    "kicker": f"Fiscal lens · {period_lbl} · {sub_m['unit']}",
+                    "title": "Subsidies vs. capital outlay by state",
+                    "badge": f"Top {len(rows)} subsidy states",
+                    "svg": svg,
+                    "note": (
+                        "Budgeted state subsidies alongside budgeted capital outlay on one zero-based crore-INR axis. "
+                        "Source: Reserve Bank of India, State Finances: A Study of Budgets of 2025-26 (Statements 4 and 36)."
+                    ),
+                })
+
+    elif area_id == "industry":
+        # Perspective 1: Pure-play quantum revenue vs GAAP net loss
+        quantum_pairs = [
+            ("IonQ", "ionq-annual-revenue", "ionq-annual-net-loss"),
+            ("D-Wave Quantum", "dwave-annual-revenue", "dwave-annual-net-loss"),
+            ("Rigetti Computing", "rigetti-annual-revenue", "rigetti-annual-net-loss"),
+        ]
+        q_rows = []
+        for label, rev_id, loss_id in quantum_pairs:
+            rm = by_id.get(rev_id)
+            lm = by_id.get(loss_id)
+            if rm and lm and rm.get("headline_point") and lm.get("headline_point"):
+                rv = float(rm["headline_point"]["value"])
+                lv = float(lm["headline_point"]["value"])
+                mult = lv / max(rv, 1e-9)
+                q_rows.append({
+                    "label": label,
+                    "value_a": rv,
+                    "value_b": lv,
+                    "sub": f"{rm['headline_point']['period_display']} · loss {mult:.1f}x rev",
+                })
+        if len(q_rows) >= 2:
+            svg = charts.editorial_dual_bars(
+                q_rows,
+                series_a_label="Annual revenue",
+                series_b_label="GAAP net loss",
+                unit="million USD",
+                title="Pure-play quantum: revenue vs. GAAP net loss",
+                area_id=area_id,
+            )
+            boards.append({
+                "kicker": "Quantum lens · FY 2025 · million USD",
+                "title": "Pure-play quantum: revenue vs. net loss",
+                "badge": f"{len(q_rows)} listed companies",
+                "svg": svg,
+                "note": (
+                    "Full-year GAAP revenue beside full-year GAAP net loss on a dedicated million-USD scale. "
+                    "Source: SEC Form 10-K and Form 8-K filings (IonQ, D-Wave Quantum, Rigetti Computing)."
+                ),
+            })
+
+        # Perspective 2: AI hyperscalers CapEx vs R&D
+        ai_pairs = [
+            ("Alphabet", "alphabet-ai-capex", "alphabet-rd-spending"),
+            ("Meta Platforms", "meta-ai-capex", "meta-rd-spending"),
+        ]
+        ai_rows = []
+        for label, cap_id, rd_id in ai_pairs:
+            cm = by_id.get(cap_id)
+            rm = by_id.get(rd_id)
+            if cm and rm and cm.get("headline_point") and rm.get("headline_point"):
+                cv = float(cm["headline_point"]["value"])
+                rv = float(rm["headline_point"]["value"])
+                ai_rows.append({
+                    "label": label,
+                    "value_a": cv,
+                    "value_b": rv,
+                    "sub": f"{cm['headline_point']['period_display']} · CapEx {cv / max(rv, 1e-9):.2f}x R&D",
+                })
+        if len(ai_rows) >= 2:
+            svg = charts.editorial_dual_bars(
+                ai_rows,
+                series_a_label="Capital expenditure",
+                series_b_label="Research & development",
+                unit="million USD",
+                title="AI infrastructure: CapEx vs. R&D",
+                area_id=area_id,
+            )
+            boards.append({
+                "kicker": "AI infrastructure lens · FY 2025 · million USD",
+                "title": "Hyperscaler CapEx vs. R&D spending",
+                "badge": "SEC FY 2025 filings",
+                "svg": svg,
+                "note": (
+                    "Purchases of property and equipment (CapEx) alongside annual research and development expense. "
+                    "Source: SEC Form 8-K FY 2025 earnings releases (Alphabet Inc., Meta Platforms, Inc.)."
+                ),
+            })
+
+    return boards

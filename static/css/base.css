@@ -1923,3 +1923,31 @@ body.page-about .site-footer {
     flex-direction: column;
   }
 }
+
+/* Multi-Perspective Editorial Boards */
+.area-perspectives-section {
+  padding-top: 40px;
+  padding-bottom: 12px;
+}
+
+.perspectives-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
+  gap: 24px;
+}
+
+.perspectives-grid-single {
+  grid-template-columns: 1fr;
+}
+
+.perspective-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+@media (max-width: 640px) {
+  .perspectives-grid {
+    grid-template-columns: 1fr;
+  }
+}

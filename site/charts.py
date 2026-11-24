@@ -522,6 +522,7 @@ def editorial_ranked_bars(
         f'<svg viewBox="0 0 640 {svg_h}" class="chart-svg line-chart-svg editorial-ranked-svg" role="img" aria-label="{html.escape(aria)}">',
     ]
 
+    # Vertical zero-based reference gridlines (0%, 50%, 100%)
     axis_y = top_pad + len(sorted_items) * row_h
     for frac, anchor in ((0.0, "start"), (0.5, "middle"), (1.0, "end")):
         gx = round(bar_x + frac * bar_max_w, 1)
@@ -848,6 +849,148 @@ def state_tile_grid(
         lines.append(
             f'  <text x="{cx}" y="{cy}" text-anchor="middle" font-size="13" font-weight="700" fill="{fg}">{html.escape(abbr)}</text>'
         )
+
+    lines.append("</svg>")
+    return "\n".join(lines)
+
+
+DUAL_BAR_SECOND_COLOR = {
+    "public-money": "#7AA2FF",
+    "industry": "#FF6A1F",
+    "people": "#FFD3E0",
+    "planet": "#6EE7B7",
+    "shared": "#D81B60",
+}
+
+
+def editorial_dual_bars(
+    rows: list[dict],
+    *,
+    series_a_label: str,
+    series_b_label: str,
+    unit: str = "",
+    title: str = "Side-by-side comparison",
+    area_id: str = "shared",
+) -> str:
+    """Paired horizontal zero-based bar chart comparing two same-unit metrics per entity.
+
+    Each row dict requires: {"label": str, "value_a": float, "value_b": float, "sub": str (optional)}.
+    """
+    if not rows:
+        return ""
+
+    pal = AREA_CHART_PALETTES.get(area_id, AREA_CHART_PALETTES["shared"])
+    color_a = pal["accent"]
+    color_b = DUAL_BAR_SECOND_COLOR.get(area_id, "#D81B60")
+
+    max_val = max(
+        max(float(r["value_a"]), float(r["value_b"]))
+        for r in rows
+    )
+    scale_max = _nice_axis_max(max_val * 1.12)
+
+    legend_h = 34
+    row_h = 62
+    bot_pad = 32
+    svg_h = legend_h + len(rows) * row_h + bot_pad
+    bar_x = 172.0
+    bar_max_w = 352.0
+
+    def fc(c: float) -> str:
+        return str(int(c)) if c == int(c) else f"{c:.1f}"
+
+    aria = f"{title}: comparing {series_a_label} and {series_b_label} in {unit}"
+    lines = [
+        f'<svg viewBox="0 0 640 {svg_h}" class="chart-svg dual-bar-svg" role="img" aria-label="{html.escape(aria)}">',
+    ]
+
+    # Top inline legend
+    lines.append(
+        f'  <rect x="{fc(bar_x)}" y="8" width="12" height="12" rx="2" fill="{color_a}"/>'
+    )
+    lines.append(
+        f'  <text x="{fc(bar_x + 18)}" y="18.5" font-size="12" font-weight="700" fill="{pal["fg"]}">{html.escape(series_a_label)}</text>'
+    )
+    leg_b_x = bar_x + 190.0
+    lines.append(
+        f'  <rect x="{fc(leg_b_x)}" y="8" width="12" height="12" rx="2" fill="{color_b}"/>'
+    )
+    lines.append(
+        f'  <text x="{fc(leg_b_x + 18)}" y="18.5" font-size="12" font-weight="700" fill="{pal["fg"]}">{html.escape(series_b_label)}</text>'
+    )
+
+    # Vertical gridlines starting strictly at zero
+    axis_y_top = float(legend_h - 2)
+    axis_y_bot = float(legend_h + len(rows) * row_h)
+    for step_idx in range(4):
+        frac = step_idx / 3.0
+        gx = round(bar_x + frac * bar_max_w, 1)
+        tick_val = round(scale_max * frac, 2)
+        op = "0.45" if step_idx == 0 else "0.16"
+        dash = "" if step_idx == 0 else ' stroke-dasharray="3 4"'
+        lines.append(
+            f'  <line x1="{fc(gx)}" y1="{fc(axis_y_top)}" x2="{fc(gx)}" y2="{fc(axis_y_bot)}" '
+            f'stroke="{pal["grid"]}" stroke-width="1" opacity="{op}"{dash}/>'
+        )
+        t_lbl = "0" if step_idx == 0 else _short_value(tick_val, unit)
+        lines.append(
+            f'  <text x="{fc(gx)}" y="{fc(axis_y_bot + 20)}" text-anchor="middle" '
+            f'font-size="11" fill="{pal["fg"]}" opacity="0.78">{html.escape(t_lbl)}</text>'
+        )
+
+    for idx, row in enumerate(rows):
+        ry = legend_h + idx * row_h
+        va = max(float(row["value_a"]), 0.0)
+        vb = max(float(row["value_b"]), 0.0)
+        wa = max(3.0, round((va / scale_max) * bar_max_w, 1)) if scale_max > 0 else 3.0
+        wb = max(3.0, round((vb / scale_max) * bar_max_w, 1)) if scale_max > 0 else 3.0
+
+        lbl = str(row["label"])
+        if len(lbl) > 22:
+            lbl = lbl[:21].rstrip() + "…"
+        sub = str(row.get("sub") or "")
+
+        lines.append(
+            f'  <text x="{fc(bar_x - 12)}" y="{fc(ry + 22)}" text-anchor="end" '
+            f'font-size="13" font-weight="700" fill="{pal["fg"]}">{html.escape(lbl)}</text>'
+        )
+        if sub:
+            lines.append(
+                f'  <text x="{fc(bar_x - 12)}" y="{fc(ry + 38)}" text-anchor="end" '
+                f'font-size="10.5" fill="{pal["fg"]}" opacity="0.72">{html.escape(sub)}</text>'
+            )
+
+        # Series A bar
+        ya = ry + 10
+        ta = html.escape(f"{row['label']} — {series_a_label}: {format_number(va, unit)} {unit}".strip())
+        lines.append(
+            f'  <rect x="{fc(bar_x)}" y="{fc(ya)}" width="{fc(wa)}" height="15" rx="3" fill="{color_a}">'
+            f'<title>{ta}</title></rect>'
+        )
+        lines.append(
+            f'  <text x="{fc(bar_x + wa + 7)}" y="{fc(ya + 11.5)}" font-size="11.5" font-weight="800" fill="#FFFFFF">'
+            f'{html.escape(_short_value(va, unit))}</text>'
+        )
+
+        # Series B bar
+        yb = ry + 29
+        tb = html.escape(f"{row['label']} — {series_b_label}: {format_number(vb, unit)} {unit}".strip())
+        lines.append(
+            f'  <rect x="{fc(bar_x)}" y="{fc(yb)}" width="{fc(wb)}" height="15" rx="3" fill="{color_b}">'
+            f'<title>{tb}</title></rect>'
+        )
+        lines.append(
+            f'  <text x="{fc(bar_x + wb + 7)}" y="{fc(yb + 11.5)}" font-size="11.5" font-weight="700" fill="{pal["fg"]}" opacity="0.92">'
+            f'{html.escape(_short_value(vb, unit))}</text>'
+        )
+
+        # Subtle row separator
+        if idx < len(rows) - 1:
+            sep_y = ry + row_h - 4
+            lines.append(
+                f'  <line x1="12" y1="{fc(sep_y)}" x2="628" y2="{fc(sep_y)}" '
+                f'stroke="{pal["grid"]}" stroke-width="1" opacity="0.1"/>'
+            )
 
     lines.append("</svg>")
     return "\n".join(lines)
