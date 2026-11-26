@@ -1,0 +1,46 @@
+{
+  "id": "mp-annual-base-salary",
+  "title": "Member of Parliament monthly base salary",
+  "area": "public-money",
+  "definition": "Official monthly base salary payable to a Member of Parliament under the Salary, Allowances and Pension of Members of Parliament Act, 1954, excluding constituency allowance (Rs 87,000/month), office expense allowance (Rs 75,000/month), and session daily allowance (Rs 2,500/day).",
+  "definition_source": "s1",
+  "unit": "INR per month",
+  "stale_after_months": 24,
+  "sources": [
+    {
+      "id": "s1",
+      "publisher": "Ministry of Parliamentary Affairs, Government of India (via Press Information Bureau)",
+      "title": "Year End Review 2025: Ministry of Parliamentary Affairs — Revision in Salary, Allowances and Pensions of MPs",
+      "url": "https://www.pib.gov.in/PressReleaseDetail.aspx?PRID=2211578&reg=3&lang=1",
+      "source_type": "primary",
+      "published": "2026-01-05",
+      "retrieved": "2026-11-26"
+    }
+  ],
+  "points": [
+    {
+      "geography": "IND",
+      "period_kind": "financial_year",
+      "period": "2022-23",
+      "value": 100000,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Section 18 table (prior rate before 01.04.2023 revision): Salary 1,00,000/- per mensem.",
+      "entered_by": "agent:gemini",
+      "verified_by": "Pushkar0997",
+      "verified_on": "2026-11-26"
+    },
+    {
+      "geography": "IND",
+      "period_kind": "financial_year",
+      "period": "2023-24",
+      "value": 124000,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Section 18 table (revised w.e.f. 01.04.2023 on Cost Inflation Index): Salary 1,24,000/- per mensem.",
+      "entered_by": "agent:gemini",
+      "verified_by": "Pushkar0997",
+      "verified_on": "2026-11-26"
+    }
+  ]
+}

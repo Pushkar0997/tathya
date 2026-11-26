@@ -1,0 +1,58 @@
+{
+  "id": "reelected-mps-average-assets",
+  "title": "Re-elected Lok Sabha MPs average declared assets (2014-2024)",
+  "area": "public-money",
+  "definition": "Mean total declared assets across three consecutive election affidavits (2014, 2019, and 2024) for 102 MPs re-elected in all three Lok Sabha terms, reflecting property valuation changes, family/spouse holdings, business income, and legislative earnings.",
+  "definition_source": "s1",
+  "unit": "crore INR",
+  "stale_after_months": 36,
+  "sources": [
+    {
+      "id": "s1",
+      "publisher": "Association for Democratic Reforms (ADR) and National Election Watch",
+      "title": "Analysis of Assets Comparison of Re-Elected MPs Between 2014 to 2024 Lok Sabha Elections",
+      "url": "https://adrindia.org/content/Analysis-of-Assets-Comparison-of-Re-Elected-MPs-Between-2014-to-2024-Lok-Sabha-Elections",
+      "source_type": "primary",
+      "published": "2026-01-07",
+      "retrieved": "2026-11-26"
+    }
+  ],
+  "points": [
+    {
+      "geography": "IND",
+      "period_kind": "calendar_year",
+      "period": "2014",
+      "value": 15.83,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Average Assets in 2014 Elections: The average assets of these 102 re-elected MPs fielded by various parties in 2014 was Rs 15.83 Crores.",
+      "entered_by": "agent:gemini",
+      "verified_by": "Pushkar0997",
+      "verified_on": "2026-11-26"
+    },
+    {
+      "geography": "IND",
+      "period_kind": "calendar_year",
+      "period": "2019",
+      "value": 24.21,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Average Assets in 2019 Elections: The average asset of these 102 re-elected MPs in 2019 was Rs 24.21 Crores.",
+      "entered_by": "agent:gemini",
+      "verified_by": "Pushkar0997",
+      "verified_on": "2026-11-26"
+    },
+    {
+      "geography": "IND",
+      "period_kind": "calendar_year",
+      "period": "2024",
+      "value": 33.13,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Average Assets in 2024 Elections: The average asset of these 102 re-elected MPs in 2024 was Rs 33.13 Crores (10-year growth of Rs 17.29 Crores or 110%).",
+      "entered_by": "agent:gemini",
+      "verified_by": "Pushkar0997",
+      "verified_on": "2026-11-26"
+    }
+  ]
+}

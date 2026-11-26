@@ -1,0 +1,106 @@
+{
+  "id": "sitting-mlas-india-average-assets",
+  "title": "Sitting MLAs average declared assets by state",
+  "area": "public-money",
+  "definition": "Mean declared movable and immovable assets per sitting Member of Legislative Assembly across 4,092 analysed MLAs in 28 states and 3 Union Territories, highlighting India's national average alongside the highest- and lowest-average states.",
+  "definition_source": "s1",
+  "unit": "crore INR",
+  "stale_after_months": 24,
+  "sources": [
+    {
+      "id": "s1",
+      "publisher": "Association for Democratic Reforms (ADR) and National Election Watch",
+      "title": "Analysis of Sitting MLAs from 28 State Assemblies and 3 Union Territories (March 2025)",
+      "url": "https://adrindia.org/node/99142",
+      "source_type": "primary",
+      "published": "2025-03-17",
+      "retrieved": "2026-11-26"
+    }
+  ],
+  "points": [
+    {
+      "geography": "IND",
+      "period_kind": "calendar_year",
+      "period": "2025",
+      "value": 17.92,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "The average of assets per MLA from state assemblies is Rs 17.92 crore (4,092 sitting MLAs holding Rs 73,348 crore total).",
+      "entered_by": "agent:gemini",
+      "verified_by": "Pushkar0997",
+      "verified_on": "2026-11-26"
+    },
+    {
+      "geography": "IN-AP",
+      "period_kind": "calendar_year",
+      "period": "2025",
+      "value": 65.07,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "The state with the highest average assets per MLA is Andhra Pradesh (174 MLAs) with average assets of Rs 65.07 crore.",
+      "entered_by": "agent:gemini",
+      "verified_by": "Pushkar0997",
+      "verified_on": "2026-11-26"
+    },
+    {
+      "geography": "IN-KA",
+      "period_kind": "calendar_year",
+      "period": "2025",
+      "value": 63.58,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Followed by Karnataka (223 MLAs, Rs 14,179 crore total) with average assets of Rs 63.58 crore.",
+      "entered_by": "agent:gemini",
+      "verified_by": "Pushkar0997",
+      "verified_on": "2026-11-26"
+    },
+    {
+      "geography": "IN-MH",
+      "period_kind": "calendar_year",
+      "period": "2025",
+      "value": 43.44,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Followed by Maharashtra (286 MLAs, Rs 12,424 crore total) with average assets of Rs 43.44 crore.",
+      "entered_by": "agent:gemini",
+      "verified_by": "Pushkar0997",
+      "verified_on": "2026-11-26"
+    },
+    {
+      "geography": "IN-KL",
+      "period_kind": "calendar_year",
+      "period": "2025",
+      "value": 3.13,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Kerala (134 MLAs) with average assets of Rs 3.13 crore.",
+      "entered_by": "agent:gemini",
+      "verified_by": "Pushkar0997",
+      "verified_on": "2026-11-26"
+    },
+    {
+      "geography": "IN-WB",
+      "period_kind": "calendar_year",
+      "period": "2025",
+      "value": 2.8,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "West Bengal (293 MLAs) with average assets of Rs 2.8 crore (printed as Rs 2.80 crore).",
+      "entered_by": "agent:gemini",
+      "verified_by": "Pushkar0997",
+      "verified_on": "2026-11-26"
+    },
+    {
+      "geography": "IN-TR",
+      "period_kind": "calendar_year",
+      "period": "2025",
+      "value": 1.51,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Tripura is the state with the lowest average assets of MLAs at Rs 1.51 crore (60 MLAs, Rs 90 crore total).",
+      "entered_by": "agent:gemini",
+      "verified_by": "Pushkar0997",
+      "verified_on": "2026-11-26"
+    }
+  ]
+}

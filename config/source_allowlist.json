@@ -27,6 +27,8 @@
     "mca.gov.in": "primary",
     "ourworldindata.org": "secondary",
     "forbes.com": "secondary",
-    "example.org": "sample"
+    "example.org": "sample",
+    "adrindia.org": "primary",
+    "pib.gov.in": "primary"
   }
 }

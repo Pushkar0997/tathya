@@ -1,0 +1,46 @@
+{
+  "id": "bihar-mlas-average-assets",
+  "title": "Bihar Assembly winning MLAs average declared assets",
+  "area": "public-money",
+  "definition": "Mean total declared assets of all winning candidates in Bihar Legislative Assembly elections (241 analysed in 2020; all 243 in 2025) from sworn ECI affidavits compiled by ADR and Bihar Election Watch.",
+  "definition_source": "s1",
+  "unit": "crore INR",
+  "stale_after_months": 36,
+  "sources": [
+    {
+      "id": "s1",
+      "publisher": "Association for Democratic Reforms (ADR) and Bihar Election Watch",
+      "title": "Analysis of Criminal Background, Financial, Education, Gender and other details of Winning Candidates in Bihar Assembly Election 2025",
+      "url": "https://adrindia.org/content/Winners-Report-Bihar-2025",
+      "source_type": "primary",
+      "published": "2025-11-15",
+      "retrieved": "2026-11-26"
+    }
+  ],
+  "points": [
+    {
+      "geography": "IN-BR",
+      "period_kind": "calendar_year",
+      "period": "2020",
+      "value": 4.32,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "The average of assets per MLA in the Bihar Assembly Elections 2020 was Rs 4.32 crore (194 of 241 MLAs, or 81%, were crorepati).",
+      "entered_by": "agent:gemini",
+      "verified_by": "Pushkar0997",
+      "verified_on": "2026-11-26"
+    },
+    {
+      "geography": "IN-BR",
+      "period_kind": "calendar_year",
+      "period": "2025",
+      "value": 9.02,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Average Assets: The average of assets per winning candidates in the Bihar Assembly Elections 2025 is Rs 9.02 Crores (total Rs 2,192.93 Crores across 243 winners; 218 or 90% crorepatis).",
+      "entered_by": "agent:gemini",
+      "verified_by": "Pushkar0997",
+      "verified_on": "2026-11-26"
+    }
+  ]
+}

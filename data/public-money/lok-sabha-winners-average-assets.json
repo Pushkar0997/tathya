@@ -1,0 +1,55 @@
+{
+  "id": "lok-sabha-winners-average-assets",
+  "title": "Lok Sabha winning MPs average declared assets",
+  "area": "public-money",
+  "definition": "Mean total movable and immovable assets declared by winning Lok Sabha candidates (including spouse and dependents) in sworn Election Commission of India nomination affidavits, as compiled by ADR.",
+  "definition_source": "s1",
+  "unit": "crore INR",
+  "stale_after_months": 36,
+  "sources": [
+    {
+      "id": "s1",
+      "publisher": "Association for Democratic Reforms (ADR) and National Election Watch",
+      "title": "Lok Sabha Elections 2024: Analysis of Criminal Background, Financial, Education, Gender and Other Details of Winning Candidates",
+      "url": "https://adrindia.org/sites/default/files/Lok_Sabha_Elections_2024_Criminal_and_Financial_background_details_of_Winning_Candidates_Finalver_English%20%281%29.pdf",
+      "source_type": "primary",
+      "published": "2024-06-06",
+      "retrieved": "2026-11-26"
+    },
+    {
+      "id": "s2",
+      "publisher": "Association for Democratic Reforms (ADR)",
+      "title": "Lok Sabha will now have over 500 crorepatis, up from 88% in 2019",
+      "url": "https://www.adrindia.org/content/lok-sabha-will-now-have-over-500-crorepatis-up-88-from-2019-adr",
+      "source_type": "primary",
+      "published": "2024-07-06",
+      "retrieved": "2026-11-26"
+    }
+  ],
+  "points": [
+    {
+      "geography": "IND",
+      "period_kind": "calendar_year",
+      "period": "2014",
+      "value": 14.7,
+      "status": "verified",
+      "source_id": "s2",
+      "evidence": "This time, the average assets of winners are Rs 46.3 crore, compared to Rs 14.7 crore in 2014.",
+      "entered_by": "agent:gemini",
+      "verified_by": "Pushkar0997",
+      "verified_on": "2026-11-26"
+    },
+    {
+      "geography": "IND",
+      "period_kind": "calendar_year",
+      "period": "2024",
+      "value": 46.34,
+      "status": "verified",
+      "source_id": "s1",
+      "evidence": "Average assets: The average of assets per winning candidate in the Lok Sabha Elections 2024 is Rs 46.34 Crore (504 of 543 winners, or 93%, are crorepatis).",
+      "entered_by": "agent:gemini",
+      "verified_by": "Pushkar0997",
+      "verified_on": "2026-11-26"
+    }
+  ]
+}
